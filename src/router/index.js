@@ -4,6 +4,8 @@ import Home from '../components/home'
 import CommunityStatistics from '../components/community/community-statistics'
 import CommunityMap from '../components/community/community-map'
 
+import echarts from 'echarts'
+
 Vue.use(Router)
 
 export default new Router({
