@@ -1,6 +1,6 @@
 # spa-s
 
-> A Vue.js project
+> vue element echart
 
 ## Build Setup
 
