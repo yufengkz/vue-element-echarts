@@ -31,3 +31,8 @@
 		}
 	}
 </script>
+<style lang="less" scoped>
+	.demo-form-inline{
+		height: 50px;
+	}
+</style>

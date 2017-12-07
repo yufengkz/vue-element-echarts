@@ -1,37 +1,14 @@
 <template>
-	<el-row class="tac">
-		<el-col :span="24">
-			<el-menu
-					default-active="2"
-					class="el-menu-vertical-demo"
-					@open="handleOpen"
-					@close="handleClose">
-				<el-submenu index="1">
-					<template slot="title">
-						<i class="el-icon-location"></i>
-						<span>统计</span>
-					</template>
-					<el-menu-item-group>
-						<el-menu-item index="1-1">
-							<router-link to="/cs">服务亭统计</router-link>
-						</el-menu-item>
-						<el-menu-item index="1-2">
-							<router-link to="/cm">服务亭map</router-link>
-						</el-menu-item>
-					</el-menu-item-group>
-				</el-submenu>
-				<el-submenu index="2">
-					<template slot="title">
-						<i class="el-icon-location"></i>
-						<span>溯源</span>
-					</template>
-					<el-menu-item-group>
-						<el-menu-item index="2-1">选项1</el-menu-item>
-						<el-menu-item index="2-2">选项2</el-menu-item>
-					</el-menu-item-group>
-				</el-submenu>
-			</el-menu>
-		</el-col>
+	<el-row class="v-slide">
+		<ul>
+			<li class=v-slide-1>
+				<router-link to="/cs">报表统计</router-link>
+			</li>
+			<li class=v-slide-2>
+				<router-link to="/cm">溯源展示</router-link>
+			</li>
+		</ul>
+
 	</el-row>
 </template>
 
@@ -48,14 +25,32 @@
 	}
 </script>
 <style scoped lang="less">
-	.el-menu-item{
-		a{
-			display: block;
-		}
-	}
-	.el-menu-item.is-active{
-		a{
-			color: red;
+	.v-slide{
+		ul{
+			li{
+				width: 100%;
+				height: 70px;
+				a{
+					display: block;
+					width: 100%;
+					text-align: center;
+					line-height: 70px;
+					color: #fff;
+					font-size: 22px;
+				}
+
+				a.router-link-active{
+					background: url('../../assets/img/slide-active.png') no-repeat center;
+				}
+			}
+			li.v-slide-1{
+				background: url('../../assets/img/ico-slide-tab-1.png') no-repeat 7.63358778625954% center;
+				background-size: 26px 26px;
+			}
+			li.v-slide-2{
+				background: url('../../assets/img/ico-slide-tab-2.png') no-repeat 7.63358778625954% center;
+				background-size: 26px 26px;
+			}
 		}
 	}
 </style>

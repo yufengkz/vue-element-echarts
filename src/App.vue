@@ -1,9 +1,11 @@
 <template>
 	<div id="app">
 		<el-container>
-			<el-header>Header</el-header>
-			<el-container>
-				<el-aside width="200px">
+			<el-header style="height: 222px;">
+				<MHeader></MHeader>
+			</el-header>
+			<el-container class="v-container">
+				<el-aside width="13.64583333333333%">
 					<Slide></Slide>
 				</el-aside>
 				<el-main>
@@ -38,18 +40,22 @@
 </script>
 
 <style>
-	.el-header, .el-footer {
-		background-color: #B3C0D1;
-		color: #333;
+	body{
+		width: 100%;
+		height: 100%;
+		background: url('./assets/img/bg.png') no-repeat;
+		background-size: 100% 100%;
+		background-size: cover;
+		position:absolute;
+		filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='./assets/img/bg.png',sizingMethod='scale');
 	}
-
-	.el-aside {
-		background-color: #D3DCE6;
-		color: #333;
+	.v-container{
+		padding: 0 1.875%;
 	}
-
-	.el-main {
-		background-color: #E9EEF3;
-		color: #333;
+	.el-aside{
+		width: 100%;
+		height: 1179px;
+		background: url('./assets/img/left-side-bg.png') center no-repeat;
+		background-size: 100% 100%;
 	}
 </style>
