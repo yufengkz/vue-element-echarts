@@ -36,7 +36,7 @@
 					text-align: center;
 					line-height: 70px;
 					color: #fff;
-					font-size: 22px;
+					font-size: 20px;
 				}
 
 				a.router-link-active{

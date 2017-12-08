@@ -1,12 +1,16 @@
 <!-- 柱状图 -->
 <template>
 	<div class="columnChart">
+		<!--搜索组件-->
+		<SearchSlide></SearchSlide>
+		<!--图表-->
 		<div class="main"></div>
 	</div>
 
 </template>
 
 <script>
+	import SearchSlide from '../search/search'
 	import echarts from 'echarts'
 
 	export default {
@@ -22,7 +26,9 @@
 			}
 		},
 		methods: {},
-		components: {},
+		components: {
+			SearchSlide
+		},
 		mounted() {
 			// 基于准备好的dom，初始化echarts实例
 			this.myChart = echarts.init(document.querySelector('.columnChart .main'));
@@ -225,7 +231,6 @@
 	.columnChart {
 		width: 100%;
 		height: 800px;
-		margin-top: 30px;
 		background-size: 100% 100%;
 		color: white;
 
