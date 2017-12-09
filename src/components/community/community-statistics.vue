@@ -4,7 +4,24 @@
 		<!--搜索组件-->
 		<SearchSlide></SearchSlide>
 		<!--图表-->
-		<div class="main"></div>
+
+    <el-row>
+      <el-col :span="12">
+        <div class="grid-content bg-purple">
+          <div class="main">
+
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="grid-content bg-purple-light">
+          <div class="main1">
+
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+
 	</div>
 
 </template>
@@ -64,7 +81,7 @@
 							color: 'white'
 						}
 					},
-					data: ['产品1', '产品2','产品3', '产品4','产品5']
+					data: ['12/05', '12/06','12/07', '12/08','12/09', '12/10', '12/11']
 				}],
 				yAxis: [{
 					axisLine: {
@@ -97,16 +114,16 @@
 				series: [{
 					name: '标签1',
 					type: 'bar',
-					data: [2.0, 4.9],
+					data: [2.0, 4.9, 20, 50,60, 70, 30],
 					barWidth: 16,
 					barGap: 0
 				},{
-					name: '标签2',
-					type: 'bar',
-					data: [4.0, 5.9],
-					barWidth: 16,
-					barGap: 0
-				}]
+          name: '标签2',
+          type: 'bar',
+          data: [4.0, 5.9, 5, 8, 6, 12, 16],
+          barWidth: 16,
+          barGap: 0
+        }]
 			});
 			/*this.myChart.setOption({
 				//全局文本样式
@@ -230,13 +247,12 @@
 <style scoped lang="less">
 	.columnChart {
 		width: 100%;
-		height: 800px;
 		background-size: 100% 100%;
 		color: white;
 
 		.main {
 			width: 100%;
-			height: calc(800px - 100px);
+			height: calc(478px - 100px);
 			margin-top: -15px;
 		}
 	}
