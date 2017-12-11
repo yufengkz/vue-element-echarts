@@ -15,38 +15,14 @@
 			<el-form-item label="所属地区：">
 				<el-select v-model="formInline.region" placeholder="蚌埠市" :style="{'width': '150px'}">
 					<el-option label="蚌埠市" value="445"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
-					<el-option label="北京市" value="1"></el-option>
+					<el-option label="北京市1" value="1"></el-option>
+					<el-option label="北京市2" value="2"></el-option>
+					<el-option label="北京市3" value="3"></el-option>
+					<el-option label="北京市4" value="4"></el-option>
+					<el-option label="北京市5" value="5"></el-option>
+					<el-option label="北京市6" value="6"></el-option>
+					<el-option label="北京市7" value="7"></el-option>
+					<el-option label="北京市8" value="8"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="时间段：">
@@ -59,7 +35,7 @@
 			<span>——&nbsp;&nbsp;</span>
 			<el-form-item label="结束时间：">
 				<el-date-picker
-						v-model="value1"
+						v-model="value2"
 						type="date"
 						placeholder="选择日期">
 				</el-date-picker>
@@ -80,12 +56,14 @@
 						return time.getTime() > Date.now();
 					}
 				},
-				value1: ''
+				value1: '',
+				value2: ''
 			}
 		},
 		methods: {
 			onSubmit() {
-				console.log('submit!');
+				console.log('查询!');
+				alert(1)
 			}
 		}
 	}
@@ -189,9 +167,13 @@
 		background: url(../../assets/img/select-bg.png) repeat-y;
 		background-size: 100% 100%;
 	}
+	.el-select-dropdown__item.selected{
+		color: #ffab19;
+	}
 	.el-select-dropdown__item.hover, .el-select-dropdown__item:hover{
 		background: url(../../assets/img/select-hover-bg.png) repeat-x;
 		background-size: 100% 100%;
+		color: #ffab19;
 	}
 	.el-select-dropdown{
 		box-shadow: none;
@@ -203,6 +185,11 @@
 	}
 	//按钮颜色
 	.el-button--sd-yellow{
+		background: #ffab19;
+		color: #fff;
+		border: 1px solid #ffab19;
+	}
+	.el-button:focus, .el-button:hover{
 		background: #ffab19;
 		color: #fff;
 		border: 1px solid #ffab19;

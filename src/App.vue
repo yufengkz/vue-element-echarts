@@ -41,7 +41,7 @@
 	}
 	.v-container{
 		padding: 0 1.875%;
-		max-width: 1850px;
+		_max-width: 1850px;
 		_margin: 0 auto;
 		padding-bottom: 50px;
 	}
