@@ -33,7 +33,6 @@
 <style lang="less">
 	body{
 		width: 100%;
-		height: 100%;
 		background: url('./assets/img/bg.png') no-repeat;
 		background-size: 100% 100%;
 		background-size: cover;
@@ -42,11 +41,14 @@
 	}
 	.v-container{
 		padding: 0 1.875%;
+		max-width: 1850px;
+		_margin: 0 auto;
+		padding-bottom: 50px;
 	}
 	.el-aside{
 		width: 100%;
 		width: 262px;
-		height: 1179px;
+		height: 900px;
 		background: url('./assets/img/left-side-bg.png') center no-repeat;
 		background-size: 100% 100%;
 	}
