@@ -4,6 +4,7 @@ import Home from '../components/home'
 import CommunityStatistics from '../components/community/community-statistics'
 import CommunityMap from '../components/community/community-map'
 import Process from '../components/process/'
+import TradePic from '../components/show/tradepic'
 
 import echarts from 'echarts'
 
@@ -30,6 +31,11 @@ export default new Router({
 			path: '/prc',
 			name: 'Process',
 			component: Process
+		},
+		{
+			path: '/tradepic',
+			name: 'TradePic',
+			component: TradePic
 		},
 	]
 })

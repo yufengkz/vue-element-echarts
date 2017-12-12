@@ -185,6 +185,7 @@
 	}
 	//按钮颜色
 	.el-button--sd-yellow{
+		width: 100px;
 		background: #ffab19;
 		color: #fff;
 		border: 1px solid #ffab19;

@@ -1,0 +1,16 @@
+
+.el-carousel__arrow--left{
+	background: url(../../src/assets/img/ico_arrow_left.png);
+	background-size: 100% 100%;
+}
+
+.el-carousel__arrow--right{
+	background: url(../../src/assets/img/ico_arrow_right.png);
+	background-size: 100% 100%;
+}
+.el-icon-arrow-left, .el-icon-arrow-right{
+	color: transparent;
+}
+.el-carousel__arrow:hover{
+	background-color: transparent;
+}

@@ -33,11 +33,11 @@
 <style lang="less">
 	body{
 		width: 100%;
-		background: url('./assets/img/bg.png') no-repeat;
+		background: url('./assets/img/bg.png') repeat-y;
 		background-size: 100% 100%;
 		background-size: cover;
-		position:absolute;
-		filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='./assets/img/bg.png',sizingMethod='scale');
+		position: absolute;
+		filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='./assets/img/bg.png',sizingMethod='scale');
 	}
 	.v-container{
 		padding: 0 1.875%;
@@ -48,7 +48,7 @@
 	.el-aside{
 		width: 100%;
 		width: 262px;
-		height: 900px;
+		height: 600px;
 		background: url('./assets/img/left-side-bg.png') center no-repeat;
 		background-size: 100% 100%;
 	}
