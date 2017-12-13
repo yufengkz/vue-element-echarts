@@ -2,10 +2,10 @@
 	<el-row class="v-slide">
 		<ul>
 			<li class=v-slide-1>
-				<router-link to="/cs">报表统计</router-link>
+				<router-link to="/service">报表统计</router-link>
 			</li>
 			<li class=v-slide-2>
-				<router-link to="/cm">溯源展示</router-link>
+				<router-link to="/prc">溯源展示</router-link>
 			</li>
 		</ul>
 

@@ -55,5 +55,6 @@
 	.el-main{
 		padding: 0;
 		margin-left: 15px;
+		overflow: inherit;
 	}
 </style>

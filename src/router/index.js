@@ -5,6 +5,7 @@ import CommunityStatistics from '../components/community/community-statistics'
 import CommunityMap from '../components/community/community-map'
 import Process from '../components/process/'
 import TradePic from '../components/show/tradepic'
+import Service from '../components/community/service'
 
 import echarts from 'echarts'
 
@@ -37,5 +38,10 @@ export default new Router({
 			name: 'TradePic',
 			component: TradePic
 		},
+		{
+			path: '/service',
+			name: 'Service',
+			component: Service
+		}
 	]
 })
