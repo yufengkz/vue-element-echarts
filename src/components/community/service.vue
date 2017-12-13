@@ -270,9 +270,7 @@
 		{name: '武汉', value: 273},
 		{name: '大庆', value: 279}
 	];
-	setTimeout( () => {
-		require('echarts/extension/bmap/bmap');
-	}, 100)
+	require('echarts/extension/bmap/bmap');
 
 	var geoCoordMap = {
 		'海门':[121.15,31.89],
@@ -495,7 +493,6 @@
 		},
 		mounted() {
 
-			setTimeout( () => {
 			let option = {
 				backgroundColor: '#404a59',
 				title: {
@@ -719,11 +716,10 @@
 				]
 			};
 
-				// 基于准备好的dom，初始化echarts实例
-				var myChart = echarts.init(document.getElementById('main'));
-				// 使用刚指定的配置项和数据显示图表。
-				myChart.setOption(option);
-			}, 2000)
+			// 基于准备好的dom，初始化echarts实例
+			var myChart = echarts.init(document.getElementById('main'));
+			// 使用刚指定的配置项和数据显示图表。
+			myChart.setOption(option);
 
 		}
 	}
