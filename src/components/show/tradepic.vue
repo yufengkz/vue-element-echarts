@@ -20,6 +20,7 @@
 		min-height: 900px;
 		margin: 0 1.875%;
 		margin-bottom: 50px;
+		padding-bottom: 5px;
 		//border: 1px solid red;
 		background: url(../../assets/img/shadow-bg.png) no-repeat;
 		background-size: 100% 100%;
@@ -27,18 +28,20 @@
 		left: 0px;
 		top: 222px;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		justify-content: center;
 
 		.el-carousel{
-			width: 90%;
+			flex: 1;
+			width: 88%;
+			height: 99%;
+			margin-top: 100px;
 		}
 
 		.v-title{
-			position: absolute;
-			top: 40px;
-			left: 0;
 			width: 100%;
+			height: 80px;
+			line-height: 80px;
 			z-index: 1;
 			text-align: center;
 			background: url(../../assets/img/show-title.png) no-repeat center;
@@ -48,7 +51,6 @@
 			}
 		}
 	}
-
 
 	.el-carousel__item {
 		img{

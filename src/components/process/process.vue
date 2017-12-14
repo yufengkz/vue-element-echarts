@@ -80,7 +80,7 @@
 							<p>公司：锦秋货运</p>
 							<p>发货时间：2017-11-27 18:00</p>
 							<p>交货时间：2017-11-27 20:00</p>
-							<router-link to="/tradepic">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
+							<router-link to="/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
 						</td>
 						<td>
 							<p>No.1001</p>
@@ -95,7 +95,7 @@
 							<p>发货时间：2017-11-27 18:00</p>
 							<p>交货时间：2017-11-27 20:00</p>
 							<p>华美-1号打包站-1号工厂</p>
-							<router-link to="/tradepic">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
+							<router-link to="/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
 						</td>
 						<td>
 							<p>No.2001</p>
