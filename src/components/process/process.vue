@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div class=pro-box>
-			<ul>
+		<div class=pro-box ref="proBox">
+			<ul class="v-animate" ref="vAnimate">
 				<li>
-					<a href="#">
+					<a href="javascript:;">
 						<div>
 							<img src="../../assets/img/ico_user.png" alt="">
 						</div>
@@ -12,7 +12,7 @@
 				</li>
 				<li><div class=v-arrow><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
 				<li>
-					<a href="#">
+					<a href="javascript:;">
 						<div>
 							<img src="../../assets/img/ico_service.png" alt="">
 						</div>
@@ -21,7 +21,7 @@
 				</li>
 				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
 				<li>
-					<a href="#">
+					<a href="javascript:;">
 						<div>
 							<img src="../../assets/img/ico_logistics.png" alt="">
 						</div>
@@ -30,7 +30,7 @@
 				</li>
 				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
 				<li>
-					<a href="#">
+					<a href="javascript:;">
 						<div>
 							<img src="../../assets/img/ico_packstation.png" alt="">
 						</div>
@@ -39,7 +39,7 @@
 				</li>
 				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
 				<li>
-					<a href="#">
+					<a href="javascript:;">
 						<div>
 							<img src="../../assets/img/ico_linecar.png" alt="">
 						</div>
@@ -48,7 +48,7 @@
 				</li>
 				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
 				<li>
-					<a href="#">
+					<a href="javascript:;">
 						<div>
 							<img src="../../assets/img/ico_factory.png" alt="">
 						</div>
@@ -57,7 +57,7 @@
 				</li>
 			</ul>
 		</div>
-		<div class=v-lists :class="{showall: true, active: showall}">
+		<div ref="vLists" class=v-lists :class="{showall: true, active: showall}">
 			<table>
 				<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
@@ -132,31 +132,58 @@
 				this.showall = !this.showall
 				if(this.showall === true) event.currentTarget.innerHTML = '收起 <i class="el-icon-arrow-up"></i>'
 				if(this.showall === false) event.currentTarget.innerHTML = '点击加载更多 <i class="el-icon-arrow-down"></i>'
-				console.log();
+			},
+			//图标进场动画
+			animated(){
+				let aLi = this.$refs.vAnimate.children
+				let proBox = this.$refs.proBox
+				let vLists = this.$refs.vLists
+				function runAsync(elm, t, index) {
+						//做一些异步操作
+						setTimeout(() => {
+							elm.className = 'slideInLeft animated'
+							//执行到最后一个
+							if(index == aLi.length - 1){
+								setTimeout( () => {
+									proBox.style.height = '180px'
+									vLists.style.display = 'block'
+								}, t)
+							}
+						}, t * index);
+				}
+				for(let i = 0; i < aLi.length; i ++){
+					runAsync(aLi[i], 500 , i)
+				}
 			}
 		},
 		mounted() {
 			this._getLists()
+			this.animated()
 		}
 	}
 </script>
 <style scoped lang="less">
 	.pro-box{
-		_height: 252px;
-		padding:  2.2% 3.17864% 0.6%  4.16864%;
+		height: 450px;
+		padding:  0 3.17864% 0 4.16864%;
 		background: url(../../assets/img/pro-bg.png) no-repeat;
 		background-size: 100% 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
 		ul{
-			overflow: hidden;
+			display: flex;
 			li{
 				width: 6.845408%;
-				float: left;
 				margin-right: 2.246%;
+				&:last-child{
+					margin-right: 0;
+				}
 			}
 			div{
 				width: 100%;
-				height: 47.619048%;
+				_height: 47.619048%;
 				img{
 					width: 100%;
 					height: 100%;
@@ -168,11 +195,13 @@
 			p{
 				text-align: center;
 				color: #00ffd6;
-				line-height: 4.666666667;
+				margin-top: 20px;
+				_line-height: 4.666666667;
 			}
 		}
 	}
 	.v-lists{
+		display: none;
 		width: 100%;
 		background: url(../../assets/img/v-lists-bg.png) repeat-y;
 		background-size: 100% 100%;
@@ -238,5 +267,36 @@
 	}
 	.el-icon-arrow-up:before{
 		color: #00ffd6 !important;
+	}
+
+	//进场动画
+	.v-animate{
+		li{
+			_display: none;
+			opacity: 0;
+		}
+	}
+	.animated {
+		animation-duration: 0.5s;
+		animation-fill-mode: both;
+	}
+
+	@keyframes slideInLeft {
+		0% {
+			transform: translate3d(-100%, 0, 0);
+			visibility: visible;
+			opacity: 0.2;
+		}
+		50%{
+			transform: scale(1.6);
+		}
+		100% {
+			transform: scale(1) translate3d(0, 0, 0);
+			opacity: 1;
+		}
+	}
+
+	.slideInLeft {
+		animation-name: slideInLeft;
 	}
 </style>
