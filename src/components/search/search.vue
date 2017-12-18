@@ -1,17 +1,22 @@
 <template>
-	<div class="v-search">
+	<div class="v-search" :routeData="routeData">
 		<!--面包屑-->
 		<el-breadcrumb separator-class="el-icon-arrow-right">
 			<span class=v-location><i class=el-icon-caret-right></i>当前位置：</span>
-			<a class="v-bread" href="/#/">报表统计 > </a>
+			<a class="v-bread" href="javascript:;">报表统计 > </a>
 			<a class="v-bread" href="javascript:;">服务亭统计排行</a>
 		</el-breadcrumb>
-
+		<ul>
+			<li v-for="item in routeData" @click="changeRoute">
+				{{item.name}}
+				{{item.route}}
+			</li>
+		</ul>
 		<!--search-->
 		<el-form :inline="true" :model="formInline" class="demo-form-inline">
-      <span class=v-stre>
-      <i class="el-icon-location"></i>
-      </span>
+			<span class=v-stre>
+				<i class="el-icon-location"></i>
+			</span>
 			<el-form-item label="所属地区：">
 				<el-select v-model="formInline.region" placeholder="蚌埠市" :style="{'width': '150px'}">
 					<el-option label="蚌埠市" value="445"></el-option>
@@ -48,6 +53,10 @@
 </template>
 <script>
 	export default {
+		props: ['routeData'],
+		computed: {
+
+		},
 		data() {
 			return {
 				formInline: {},
@@ -57,14 +66,21 @@
 					}
 				},
 				value1: '',
-				value2: ''
+				value2: '',
 			}
 		},
 		methods: {
 			onSubmit() {
 				console.log('查询!');
 				alert(1)
+			},
+			changeRoute() {
+				//子组件向父组件传值
+				this.$emit('message','哈哈哈哈');
 			}
+		},
+		mounted() {
+			console.log(this.routeData);
 		}
 	}
 </script>

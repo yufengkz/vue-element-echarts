@@ -1,6 +1,6 @@
 <template>
-	<h3>
-		这是首页 - {{msg}}
+	<h3 class="v-home">
+		{{msg}}
 	</h3>
 </template>
 
@@ -9,7 +9,7 @@
 		name: 'home',
 		data() {
 			return {
-				msg: 'Welcome to Your Vue.js App'
+				msg: '欢迎来到桑德薪环卫'
 			}
 		}
 	}
@@ -17,7 +17,13 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-	h3{
+	.v-home{
+		height: 600px;
+		background: url(../assets/img/pro-bg.png) no-repeat;
+		background-size: 100% 100%;
 		color: #fff;
+		text-align: center;
+		line-height: 600px;
+		font-size: 50px;
 	}
 </style>

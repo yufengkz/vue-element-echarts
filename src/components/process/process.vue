@@ -152,7 +152,7 @@
 						}, t * index);
 				}
 				for(let i = 0; i < aLi.length; i ++){
-					runAsync(aLi[i], 500 , i)
+					runAsync(aLi[i], 300 , i)
 				}
 			}
 		},
@@ -277,7 +277,7 @@
 		}
 	}
 	.animated {
-		animation-duration: 0.5s;
+		animation-duration: 0.3s;
 		animation-fill-mode: both;
 	}
 

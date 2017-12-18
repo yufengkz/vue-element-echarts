@@ -83,6 +83,7 @@
 	export default {
 		data() {
 			return {
+				routeData: [{route: 'service', name: '报表统计'}],
 				geoCoordMap: {}
 			}
 		},
@@ -99,6 +100,10 @@
 					}
 				}
 				return res;
+			},
+			receiveMessage(msg) {
+				//父组件监听子组件
+				console.log('监听到子组件改变' + msg);
 			}
 		},
 		components: {
@@ -870,7 +875,7 @@
 		}
 	}
 
-	.anchorBL, {
+	.anchorBL {
 		display: none;
 		opacity: 0;
 	}

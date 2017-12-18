@@ -14,3 +14,8 @@
 .el-carousel__arrow:hover{
 	background-color: transparent;
 }
+
+.anchorBL {
+	display: none;
+	opacity: 0;
+}
