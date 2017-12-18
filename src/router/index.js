@@ -15,37 +15,37 @@ Vue.use(Router)
 export default new Router({
 	routes: [
 		{
-			path: '/',
+			path: '/', //index
 			name: 'Home',
 			component: Home
 		},
 		{
-			path: '/cs',
-			name: 'CommunityStatistics',
-			component: CommunityStatistics
-		},
-		{
-			path: '/cm',
-			name: 'CommunityMap',
-			component: CommunityMap
-		},
-		{
-			path: '/prc',
-			name: 'Process',
-			component: Process
-		},
-		{
-			path: '/service',
+			path: '/service',  //首页
 			name: 'Service',
 			component: Service
 		},
 		{
-			path: '/tradepic',
+			path: '/service/cs',  //服务亭统计
+			name: 'CommunityStatistics',
+			component: CommunityStatistics
+		},
+		{
+			path: '/service/cm',  //打包站统计
+			name: 'CommunityStatistics',
+			component: CommunityStatistics
+		},
+		{
+			path: '/prc',  //溯源展示
+			name: 'Process',
+			component: Process
+		},
+		{
+			path: '/prc/tradepic', //轮播图
 			name: 'TradePic',
 			component: TradePic
 		},
 		{
-			path: '/routes',
+			path: '/prc/routes', //地图线路规划
 			name: 'RoutesLine',
 			component: RoutesLine
 		},

@@ -5,9 +5,10 @@
 
 		<div class="main-content">
 			<div class="side-wrapper">
-				<div class="side-box side-top">
-					<h3 class="title">
-						<router-link to="/cs">服务亭</router-link>
+				<!--服务厅-->
+				<div class="side-box" :class="{'side-top': checkElm}" @click="checkService">
+					<h3 ref="serviceTitle" class="title">
+						<a href="javascript:;">服务亭</a>
 					</h3>
 					<div class="content">
 						<dl class="clearfix">
@@ -25,7 +26,8 @@
 						</dl>
 					</div>
 				</div>
-				<div class="side-box side-bottom">
+				<!--打包站-->
+				<div class="side-box side-bottom" @click="checkPack">
 					<h3 class="title">打包站</h3>
 					<div class="content">
 						<dl class="clearfix">
@@ -47,14 +49,14 @@
 			<div class="main-wrapper">
 				<h3 class="title">
 					蚌埠市服务亭共计100个
-					<router-link to="/cs" class="pull-right">查看详情 >></router-link>
+					<router-link to="/service/cs" class="pull-right">查看详情 >></router-link>
 				</h3>
 				<div class="content" id="main" style="height: 760px;width: 100%;">
 					地图容器
 				</div>
 			</div>
 		</div>
-
+		<!--list-->
 		<div class="main-bottom">
 			<h3 class="title">华美嘉园服务亭</h3>
 			<ul class="table">
@@ -84,7 +86,8 @@
 		data() {
 			return {
 				routeData: [{route: 'service', name: '报表统计'}],
-				geoCoordMap: {}
+				geoCoordMap: {},
+				checkElm: false
 			}
 		},
 		methods: {
@@ -101,9 +104,13 @@
 				}
 				return res;
 			},
-			receiveMessage(msg) {
-				//父组件监听子组件
-				console.log('监听到子组件改变' + msg);
+			checkService(){
+				console.log(this);
+				console.log();
+
+			},
+			checkPack(){
+				alert('package')
 			}
 		},
 		components: {
@@ -758,6 +765,8 @@
 					text-align: center;
 					font-size: 20px;
 					color: #00ffd6;
+					border-top-left-radius: 15px;
+					border-top-right-radius: 15px;
 					a{
 						color: #00ffd6;
 					}
@@ -800,7 +809,7 @@
 			}
 			.side-top {
 				.title {
-					background: rgba(255, 255, 255, .1);
+					background: rgba(255, 255, 255, .15);
 				}
 			}
 			.side-bottom {

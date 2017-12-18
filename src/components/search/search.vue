@@ -1,48 +1,43 @@
 <template>
-	<div class="v-search" :routeData="routeData">
+	<div class="v-search">
 		<!--面包屑-->
 		<el-breadcrumb separator-class="el-icon-arrow-right">
 			<span class=v-location><i class=el-icon-caret-right></i>当前位置：</span>
 			<a class="v-bread" href="javascript:;">报表统计 > </a>
 			<a class="v-bread" href="javascript:;">服务亭统计排行</a>
 		</el-breadcrumb>
-		<ul>
-			<li v-for="item in routeData" @click="changeRoute">
-				{{item.name}}
-				{{item.route}}
-			</li>
-		</ul>
 		<!--search-->
 		<el-form :inline="true" :model="formInline" class="demo-form-inline">
 			<span class=v-stre>
 				<i class="el-icon-location"></i>
 			</span>
-			<el-form-item label="所属地区：">
-				<el-select v-model="formInline.region" placeholder="蚌埠市" :style="{'width': '150px'}">
+			<el-form-item label="所属城市：">
+				<el-select v-model="formInline.city" placeholder="蚌埠市" :style="{'width': '120px'}">
 					<el-option label="蚌埠市" value="445"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="所属地区：">
+				<el-select v-model="formInline.area" placeholder="蚌山区" :style="{'width': '120px'}">
+					<el-option label="蚌山区" value="445"></el-option>
 					<el-option label="北京市1" value="1"></el-option>
 					<el-option label="北京市2" value="2"></el-option>
 					<el-option label="北京市3" value="3"></el-option>
 					<el-option label="北京市4" value="4"></el-option>
-					<el-option label="北京市5" value="5"></el-option>
-					<el-option label="北京市6" value="6"></el-option>
-					<el-option label="北京市7" value="7"></el-option>
-					<el-option label="北京市8" value="8"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="时间段：">
 				<el-date-picker
-						v-model="value1"
+						v-model="startDate"
 						type="date"
-						placeholder="选择日期">
+						placeholder="开始日期">
 				</el-date-picker>
 			</el-form-item>
 			<span>——&nbsp;&nbsp;</span>
-			<el-form-item label="结束时间：">
+			<el-form-item label="">
 				<el-date-picker
-						v-model="value2"
+						v-model="endDate"
 						type="date"
-						placeholder="选择日期">
+						placeholder="结束日期">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -53,34 +48,34 @@
 </template>
 <script>
 	export default {
-		props: ['routeData'],
 		computed: {
 
 		},
 		data() {
 			return {
-				formInline: {},
+				formInline: {
+					city: '蚌埠市',
+					area: '蚌山区'
+				},
 				pickerOptions1: {
 					disabledDate(time) {
 						return time.getTime() > Date.now();
 					}
 				},
-				value1: '',
-				value2: '',
+				startDate: '',
+				endDate: '',
 			}
 		},
 		methods: {
 			onSubmit() {
 				console.log('查询!');
-				alert(1)
-			},
-			changeRoute() {
-				//子组件向父组件传值
-				this.$emit('message','哈哈哈哈');
+				console.log(this.formInline)
+				console.log(this.startDate)
+				console.log(this.startDate)
 			}
 		},
 		mounted() {
-			console.log(this.routeData);
+
 		}
 	}
 </script>
@@ -167,8 +162,9 @@
 		border: 1px solid #999;
 		color: #fff;
 	}
+	//picker宽度
 	.el-date-editor.el-input, .el-date-editor.el-input__inner{
-		width: 150px;
+		width: 140px;
 	}
 	.el-icon-arrow-up:before{
 		color: #ffab19;
