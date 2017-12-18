@@ -203,9 +203,9 @@
 						var $pna = params.name;
 						console.log($pna);
 						var res = '';
-						for (var i = 0; i < data.length; i++) {
-							if (data[i].name == $pna) {
-								res = `${data[i].name}服务亭`;//设置自定义数据的模板，这里的模板是图片
+						for (var i = 0; i < dataService.length; i++) {
+							if (dataService[i].name == $pna) {
+								res = `${dataService[i].name}服务亭`;//设置自定义数据的模板，这里的模板是图片
 								//console.log(res);
 								break;
 							}
@@ -444,9 +444,9 @@
 						var $pna = params.name;
 						console.log($pna);
 						var res = '';
-						for (var i = 0; i < data.length; i++) {
-							if (data[i].name == $pna) {
-								res = `${data[i].name}服务亭`;//设置自定义数据的模板，这里的模板是图片
+						for (var i = 0; i < dataPace.length; i++) {
+							if (dataPace[i].name == $pna) {
+								res = `${dataPace[i].name}服务亭`;//设置自定义数据的模板，这里的模板是图片
 								//console.log(res);
 								break;
 							}
@@ -644,7 +644,7 @@
 						},
 						itemStyle: {
 							normal: {
-								color: 'rgb(245, 184, 0)', //圆圈颜色
+								color: 'rgb(232, 33, 79)', //圆圈颜色
 								shadowBlur: 10,
 								shadowColor: '#333'
 							}
@@ -668,14 +668,14 @@
 			}
 
 			// =========================================//
-
+			//初始化服务亭
 			// 基于准备好的dom，初始化echarts实例
 			var myChartService = echarts.init(document.getElementById('main'));
 			// 使用刚指定的配置项和数据显示图表。
 			myChartService.setOption(this.optionService);
 
 			// =========================================//
-
+			//初始化打包站
 			// 基于准备好的dom，初始化echarts实例
 			var myChartPack = echarts.init(document.getElementById('mainPack'));
 			// 使用刚指定的配置项和数据显示图表。
