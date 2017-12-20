@@ -1,8 +1,55 @@
 <template>
 	<div>
 		<!--搜索组件-->
-		<SearchSlide></SearchSlide>
+		<div class="v-search">
+			<!--面包屑-->
+			<el-breadcrumb separator-class="el-icon-arrow-right">
+				<span class=v-location><i class=el-icon-caret-right></i>当前位置：</span>
+				<a class="v-bread" href="javascript:;">报表统计</a>
+			</el-breadcrumb>
+			<!--search-->
+			<el-form :inline="true" :model="searchData" class="demo-form-inline">
+			<span class=v-stre>
+				<i class="el-icon-location"></i>
+			</span>
+				<el-form-item label="所属城市：">
+					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '120px'}">
+						<el-option label="蚌埠市" value="445"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="所属地区：">
+					<el-select v-model="searchData.countyName" placeholder="请选择" :style="{'width': '120px'}">
+						<el-option label="请选择" value=""></el-option>
+						<el-option
+								v-for="(item, index) in countyLists"
+								:key="item.index"
+								:label="item.name"
+								:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="时间段：">
+					<el-date-picker
+							v-model="searchData.startDate"
+							type="date"
+							placeholder="开始日期">
+					</el-date-picker>
+				</el-form-item>
+				<span>——&nbsp;&nbsp;</span>
+				<el-form-item label="">
+					<el-date-picker
+							v-model="searchData.endDate"
+							type="date"
+							placeholder="结束日期">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="sd-yellow" @click="onSubmit">确定</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
 
+		<!--内容区域-->
 		<div class="main-content">
 			<div class="side-wrapper">
 				<!--服务厅-->
@@ -16,11 +63,11 @@
 							<dd class="pull-left">
 								<div>
 									<p>回收货物量（千克）</p>
-									<p>200000</p>
+									<p>{{serviceData.order_recycle_weight}}</p>
 								</div>
 								<div>
 									<p>发运货物量（千克）</p>
-									<p>200000</p>
+									<p>{{serviceData.net_weight}}</p>
 								</div>
 							</dd>
 						</dl>
@@ -35,11 +82,11 @@
 							<dd class="pull-left">
 								<div>
 									<p>回收货物量（千克）</p>
-									<p>200000</p>
+									<p>{{packData.order_recycle_weight}}</p>
 								</div>
 								<div>
 									<p>发运货物量（千克）</p>
-									<p>200000</p>
+									<p>{{packData.net_weight}}</p>
 								</div>
 							</dd>
 						</dl>
@@ -61,7 +108,7 @@
 		</div>
 		<!--list-->
 		<div class="main-bottom">
-			<h3 class="title">华美嘉园服务亭</h3>
+			<h3 class="title">{{oneData.name}}</h3>
 			<ul class="table">
 				<li>
 					<span>回收量（千克）</span>
@@ -69,9 +116,9 @@
 					<span>用户量（个）</span>
 				</li>
 				<li>
-					<span>1500</span>
-					<span>1000</span>
-					<span>60</span>
+					<span>{{oneData.weightUser}}</span>
+					<span>{{oneData.weight}}</span>
+					<span>{{oneData.user_mobile}}</span>
 				</li>
 			</ul>
 		</div>
@@ -92,8 +139,12 @@
 				optionPack: {},
 				checkElm: true, //控制切换服务厅还是打包站
 				searchData: {
-					city: '蚌埠市',
-					type: 0
+					cityName: '蚌埠市',
+					cityId: 103,  //市
+					countyName: '请选择',  //区
+					countyId: 1024,  //区
+					startDate: '',
+					endDate: ''
 				},
 				len: 102,
 				mapTitle: '',
@@ -101,15 +152,63 @@
 				mapDataService: [], //地图data
 				mapDataPack: [], //地图data
 				serviceSHow: 9,  //显示zIndex 服务亭
-				packSHow: 8   //显示zIndex 打包站
+				packSHow: 8,   //显示zIndex 打包站
+
+				//top search
+				formInline: {
+					city: '蚌埠市',
+					area: '蚌山区'
+				},
+				pickerOptions1: {
+					disabledDate(time) {
+						return time.getTime() > Date.now();
+					}
+				},
+
+				//区列表
+				countyLists: [],
+
+				//服务亭总数据
+				serviceData: {
+					order_recycle_weight: 0, //回收货物总重量
+					net_weight: 0, //发运货物总重量
+					houseNum: `蚌埠市服务亭共计0个`, //服务亭总数量
+				},
+				//打包站总数据
+				packData: {
+					order_recycle_weight: 0, //回收货物总重量
+					net_weight: 0, //发运货物总重量
+					package: '蚌埠市服务亭共计0个', //打包站总数量
+				},
+
+				//某个服务亭数据
+				oneServiceData: {
+					name: '', //服务亭名称
+					weightUser: 0, //单个服务亭回收量
+					weight: 0, //单个服务亭运输量
+					user_mobile: 0, //单个服务亭总用户数
+				},
+				//某个打包站数据
+				onePackData: {
+					name: '', //服务亭名称
+					weightUser: 0, //单个服务亭回收量
+					weight: 0, //单个服务亭运输量
+					user_mobile: 0, //单个服务亭总用户数
+				},
+				oneData: {
+					name: '', //服务亭、打包站名称
+					weightUser: 0, //单个服务亭、打包站回收量
+					weight: 0, //单个服务亭、打包站运输量
+					user_mobile: 0, //单个服务亭、打包站总用户数
+				},
 			}
 		},
 		methods: {
+			//地图option
 			convertData(data) {
 				var res = [];
 				for (var i = 0; i < data.length; i++) {
 					var geoCoord = data[i].coordinate //取坐标
-
 					if (geoCoord) {
 						res.push({
 							name: data[i].name,
@@ -119,15 +218,18 @@
 				}
 				return res;
 			},
+
 			//控制当前选择的是服务亭还是打包站
 			checkService() {
 				this.checkElm = true
 				this.serviceSHow = 9
 				this.packSHow = 8
 				//设置title
-				this.mapTitle = `${this.searchData.city}服务亭共计${this.len}个`
+				this.mapTitle = this.serviceData.houseNum
 				//设置跳到哪里
 				this.toLink = '#/service/cs'
+				//点击后设置列表的数据
+				this.oneData = this.oneServiceData
 
 			},
 			checkPack() {
@@ -135,14 +237,53 @@
 				this.serviceSHow = 8
 				this.packSHow = 9
 				//设置title
-				this.mapTitle = `${this.searchData.city}打包站共计${this.len}个`
+				this.mapTitle = this.packData.package
 				//设置跳到哪里
 				this.toLink = '#/service/xxx'
+				//点击后设置列表的数据
+				this.oneData = this.onePackData
 
 			},
-			//获取默认加载数据
+
+			//获取默认加载的全部数据
 			getSubData() {
-				console.log(this.searchData);
+				//获取服务亭总体数据
+				axios.get(`/countdelivery/countnum?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
+					let res = data.data
+					if(res.code != 0) return alert(res.msg)
+					//区列表
+					this.countyLists = res.data.country
+					//console.log(res.data);
+					//总数据量
+					this.serviceData = {
+						order_recycle_weight: res.data.deliveryList.order_recycle_weight || 0, //回收货物总重量
+						net_weight: res.data.deliveryList.net_weight || 0, //发运货物总重量
+						houseNum: `蚌埠市服务亭共计${res.data.deliveryList.houseNum || 0}个`, //服务亭总数量
+					}
+					//默认设置地图title
+					this.mapTitle = `蚌埠市服务亭共计${res.data.deliveryList.houseNum || 0}个`
+
+				}).catch((e) => {
+					console.log(e);
+				})
+				//获取打包站总体数据
+				axios.get(`/countpackage/countsite?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
+					let res = data.data
+					if(res.code != 0) return alert(res.msg)
+					//打包站的区列表  蚌埠市的区域列表应该都是一样的
+					//this.countyLists = res.data.country
+					//console.log(res.data);
+
+					//总数据量
+					this.packData = {
+						order_recycle_weight: res.data.siteliat.order_recycle_weight || 0, //回收货物总重量
+						net_weight: res.data.siteliat.net_weight || 0, //发运货物总重量
+						package: `蚌埠市打包站共计${res.data.siteliat.package || 0}个`, //服务亭总数量
+					}
+
+				}).catch((e) => {
+					console.log(e);
+				})
 
 				//调用接口加载默认数据 -- 服务亭
 				this.mapDataService = [
@@ -164,20 +305,66 @@
 					{name: '蚌埠市1', value: 180, coordinate: [117.385164, 32.922009]}
 				]
 
-			}
+			},
+
+			//获取默认单个服务亭、打包站数据
+			getOneServiceData(nId){
+				//获取服务亭
+				let sId = nId || 15
+				axios.get('/countdelivery/houseList?id=' + sId).then( (data) => {
+					let res = data.data
+					this.oneServiceData = {
+						name: 'xxxxx服务亭', //服务亭名称
+						weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
+						weight: res.weight || '未查到信息', //单个服务亭运输量
+						user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
+					}
+					//设置列表默认显示的数据
+					this.oneData = {
+						name: 'xxxxx服务亭', //服务亭名称
+						weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
+						weight: res.weight || '未查到信息', //单个服务亭运输量
+						user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
+					}
+
+				}).catch((e) => {
+					console.log(e);
+				})
+				//获取打包站
+				let pId = nId || 31
+				axios.get('/countpackage/siteList?d=' + pId).then( (data) => {
+					let res = data.data
+					this.onePackData = {
+						name: 'xxxxx打包站', //打包站名称
+						weightUser: res.weightUser.weight || '未查到信息', //单个打包站回收量
+						weight: res.weight || '未查到信息', //单个打包站运输量
+						user_mobile: res.weightUser.user_mobile || '未查到信息', //单个打包站总用户数
+					}
+				}).catch((e) => {
+					console.log(e);
+				})
+			},
+
+			//查询数据
+			onSubmit() {
+				console.log('查询!');
+				console.log(this.searchData)
+			},
 		},
 		components: {
-			SearchSlide
+
 		},
 		created() {
 
 		},
 		mounted() {
 			//
+
+			//调用区县数据 xx
 			this.getSubData()
 
-			//设置title
-			this.mapTitle = `${this.searchData.city}服务亭共计${this.len}个`
+			//获取某个服务亭的数据
+			this.getOneServiceData()
 
 			//服务亭
 			var dataService = this.mapDataService
@@ -701,7 +888,7 @@
 	}
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 	.main-content {
 		margin-top: 20px;
 		display: flex;
@@ -837,5 +1024,134 @@
 	.anchorBL {
 		display: none;
 		opacity: 0;
+	}
+
+	/*search*/
+	.v-search {
+		height: 128px;
+		background: url('../../assets/img/searchslide-bg.png');
+		background-size: 100% 100%;
+		color: #fff;
+		padding: 0 20px;
+
+		.el-breadcrumb {
+			height: 60px;
+			line-height: 60px;
+
+			.v-location {
+				float: left;
+				font-size: 16px;
+				.el-icon-caret-right {
+					color: #28b51f;
+					font-size: 20px;
+				}
+			}
+
+			.v-bread {
+				font-size: 16px;
+				font-weight: normal !important;
+				color: #00ffd6 !important;
+			}
+			a.v-bread:last-child {
+				color: #fff !important;
+			}
+		}
+
+	}
+
+	.el-form{
+		margin-top: 10px;
+	}
+	.v-stre {
+		line-height: 40px;
+		.el-icon-location{
+			color: #ffab19;
+		}
+	}
+
+	.el-form-item__label {
+		color: #fff !important;
+	}
+	//面包屑
+	.el-breadcrumb__inner, .el-breadcrumb__inner a {
+		font-weight: normal;
+		-webkit-transition: color .2s cubic-bezier(.645, .045, .355, 1);
+		transition: color .2s cubic-bezier(.645, .045, .355, 1);
+		color: #00ffd6;
+	}
+	//日历
+	.el-date-picker{
+		background: url(../../assets/img/data-picker-bg.png) no-repeat;
+		background-size: 100% 100%;
+		border: transparent;
+	}
+	.el-picker-panel__icon-btn, .el-date-picker__header-label{
+		color: #fff;
+	}
+	.el-date-table td.next-month, .el-date-table td.prev-month{
+		//color: #666;
+	}
+	.el-date-table td.current:not(.disabled) span{
+		background: #ffab19;
+	}
+	.el-date-table td.available:hover{
+		color: #fff;
+	}
+	.el-date-table td.today span{
+		color: #fff;
+	}
+	.el-icon-date{
+		font-size: 20px;
+		color: #ffab19;
+	}
+	.el-input__inner{
+		background: transparent;
+		border: 1px solid #999;
+		color: #fff;
+	}
+	//picker宽度
+	.el-date-editor.el-input, .el-date-editor.el-input__inner{
+		width: 140px;
+	}
+	.el-icon-arrow-up:before{
+		color: #ffab19;
+	}
+	//弹出框箭头
+	.el-popper .popper__arrow{
+		display: none;
+	}
+
+	//下拉框
+	.el-select-dropdown__list{
+		background: url(../../assets/img/select-bg.png) repeat-y;
+		background-size: 100% 100%;
+	}
+	.el-select-dropdown__item.selected{
+		color: #ffab19;
+	}
+	.el-select-dropdown__item.hover, .el-select-dropdown__item:hover{
+		background: url(../../assets/img/select-hover-bg.png) repeat-x;
+		background-size: 100% 100%;
+		color: #ffab19;
+	}
+	.el-select-dropdown{
+		box-shadow: none;
+		background-color: transparent;
+		border: 1px solid transparent;
+	}
+	.el-select-dropdown__item{
+		color: #fff;
+	}
+	//按钮颜色
+	.el-button--sd-yellow{
+		width: 100px;
+		background: #ffab19;
+		color: #fff;
+		border: 1px solid #ffab19;
+	}
+	.el-button:focus, .el-button:hover{
+		background: #ffab19;
+		color: #fff;
+		border: 1px solid #ffab19;
 	}
 </style>

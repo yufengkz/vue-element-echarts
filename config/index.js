@@ -3,6 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const proxyMiddleware = require('http-proxy-middleware')
 
 module.exports = {
   dev: {
@@ -10,7 +11,14 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+	    '/countdelivery/*':{
+		    target:'http://192.168.89.1:8080/sound-recycle-count'
+	    },
+	    '/countpackage/*':{
+		    target:'http://192.168.89.1:8080/sound-recycle-count'
+	    },
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

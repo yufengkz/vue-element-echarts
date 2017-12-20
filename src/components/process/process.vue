@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class=pro-box ref="proBox">
+		<div class=pro-box   ref="proBox">
 			<ul class="v-animate" ref="vAnimate">
 				<li>
 					<a href="javascript:;">
@@ -10,7 +10,9 @@
 						<p>用户</p>
 					</a>
 				</li>
-				<li><div class=v-arrow><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
+				<li>
+					<div class=v-arrow><img src="../../assets/img/ico-arrow.png" alt=""></div>
+				</li>
 				<li>
 					<a href="javascript:;">
 						<div>
@@ -19,7 +21,9 @@
 						<p>服务厅</p>
 					</a>
 				</li>
-				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
+				<li>
+					<div><img src="../../assets/img/ico-arrow.png" alt=""></div>
+				</li>
 				<li>
 					<a href="javascript:;">
 						<div>
@@ -28,7 +32,9 @@
 						<p>物流车辆</p>
 					</a>
 				</li>
-				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
+				<li>
+					<div><img src="../../assets/img/ico-arrow.png" alt=""></div>
+				</li>
 				<li>
 					<a href="javascript:;">
 						<div>
@@ -37,7 +43,9 @@
 						<p>打包站</p>
 					</a>
 				</li>
-				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
+				<li>
+					<div><img src="../../assets/img/ico-arrow.png" alt=""></div>
+				</li>
 				<li>
 					<a href="javascript:;">
 						<div>
@@ -46,7 +54,9 @@
 						<p>干线车辆</p>
 					</a>
 				</li>
-				<li><div><img src="../../assets/img/ico-arrow.png" alt=""></div></li>
+				<li>
+					<div><img src="../../assets/img/ico-arrow.png" alt=""></div>
+				</li>
 				<li>
 					<a href="javascript:;">
 						<div>
@@ -57,62 +67,83 @@
 				</li>
 			</ul>
 		</div>
-		<div ref="vLists" class=v-lists :class="{showall: true, active: showall}">
+		<div ref="vLists" class=v-lists   :class="{showall: true, active: showall}">
 			<table>
 				<tbody>
-					<tr v-for="(item, index) in data" :key="item.id">
-						<td>
-							<p>{{item.id}}</p>
-							<p>100513910637877</p>
-							<p>No.20171127</p>
-						</td>
-						<td>
-							<p>华美家园服务亭</p>
-							<p>No.20171127</p>
-							<p>废纸 20kg 共计20元</p>
-							<p>创建时间：11-27 15：00</p>
-							<router-link to="/prc/tradepic">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
-						</td>
-						<td>
-							<p>No.1001</p>
-							<p>车牌号：京A00001</p>
-							<p>司机名称：王博1</p>
-							<p>公司：锦秋货运</p>
-							<p>发货时间：2017-11-27 18:00</p>
-							<p>交货时间：2017-11-27 20:00</p>
-							<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
-						</td>
-						<td>
-							<p>No.1001</p>
-							<p>1号打包站-华美</p>
-							<router-link to="/prc/tradepic">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
-						</td>
-						<td>
-							<p>No.2001</p>
-							<p>车牌号：京A00002</p>
-							<p>司机名称：王博2</p>
-							<p>公司：锦秋货运</p>
-							<p>发货时间：2017-11-27 18:00</p>
-							<p>交货时间：2017-11-27 20:00</p>
-							<p>华美-1号打包站-1号工厂</p>
-							<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
-						</td>
-						<td>
-							<p>No.2001</p>
-							<p>1号工厂-1号打包站-华美</p>
-						</td>
-					</tr>
+				<tr v-for="(item, index) in data" :key="item.id">
+					<td>
+						<p>{{item.id}}</p>
+						<p>100513910637877</p>
+						<p>No.20171127</p>
+					</td>
+					<td>
+						<p>华美家园服务亭</p>
+						<p>No.20171127</p>
+						<div>废纸 20kg 共计20元
+							<span class="v-more"> 更多>
+								<div class="v-more-lists">
+									<div>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+										<p>花纸 10kg 共计30元</p>
+									</div>
+								</div>
+							</span>
+						</div>
+						<p>创建时间：11-27 15：00</p>
+						<router-link to="/prc/tradepic">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
+					</td>
+					<td>
+						<p>No.1001</p>
+						<p>车牌号：京A00001</p>
+						<p>司机名称：王博1</p>
+						<p>公司：锦秋货运</p>
+						<p>发货时间：2017-11-27 18:00</p>
+						<p>交货时间：2017-11-27 20:00</p>
+						<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
+					</td>
+					<td>
+						<p>No.1001</p>
+						<p>1号打包站-华美</p>
+						<router-link to="/prc/tradepic">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
+					</td>
+					<td>
+						<p>No.2001</p>
+						<p>车牌号：京A00002</p>
+						<p>司机名称：王博2</p>
+						<p>公司：锦秋货运</p>
+						<p>发货时间：2017-11-27 18:00</p>
+						<p>交货时间：2017-11-27 20:00</p>
+						<p>华美-1号打包站-1号工厂</p>
+						<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
+					</td>
+					<td>
+						<p>No.2001</p>
+						<p>1号工厂-1号打包站-华美</p>
+					</td>
+				</tr>
 				</tbody>
 			</table>
 
 			<div class="showmore">
-				<a href="javascript:;" @click="showMore" :class="{active: showall}">点击加载更多 <i class="el-icon-arrow-down"></i></a>
+				<a href="javascript:;" @click="showMore" :class="{active: showall}">点击加载更多 <i
+						class="el-icon-arrow-down"></i></a>
 			</div>
 		</div>
 	</div>
 </template>
 <script>
-	import  axios from 'axios'
+	import axios from 'axios'
 
 	export default {
 		data() {
@@ -130,29 +161,31 @@
 			},
 			showMore(event) {
 				this.showall = !this.showall
-				if(this.showall === true) event.currentTarget.innerHTML = '收起 <i class="el-icon-arrow-up"></i>'
-				if(this.showall === false) event.currentTarget.innerHTML = '点击加载更多 <i class="el-icon-arrow-down"></i>'
+				if (this.showall === true) event.currentTarget.innerHTML = '收起 <i class="el-icon-arrow-up"></i>'
+				if (this.showall === false) event.currentTarget.innerHTML = '点击加载更多 <i class="el-icon-arrow-down"></i>'
 			},
 			//图标进场动画
-			animated(){
+			animated() {
 				let aLi = this.$refs.vAnimate.children
 				let proBox = this.$refs.proBox
 				let vLists = this.$refs.vLists
+
 				function runAsync(elm, t, index) {
-						//做一些异步操作
-						setTimeout(() => {
-							elm.className = 'slideInLeft animated'
-							//执行到最后一个
-							if(index == aLi.length - 1){
-								setTimeout( () => {
-									proBox.style.height = '180px'
-									vLists.style.display = 'block'
-								}, t)
-							}
-						}, t * index);
+					//做一些异步操作
+					setTimeout(() => {
+						elm.className = 'slideInLeft animated'
+						//执行到最后一个
+						if (index == aLi.length - 1) {
+							setTimeout(() => {
+								proBox.style.height = '180px'
+								vLists.style.display = 'block'
+							}, t)
+						}
+					}, t * index);
 				}
-				for(let i = 0; i < aLi.length; i ++){
-					runAsync(aLi[i], 300 , i)
+
+				for (let i = 0; i < aLi.length; i++) {
+					runAsync(aLi[i], 300, i)
 				}
 			}
 		},
@@ -163,36 +196,36 @@
 	}
 </script>
 <style scoped lang="less">
-	.pro-box{
+	.pro-box {
 		height: 450px;
-		padding:  0 3.17864% 0 4.16864%;
+		padding: 0 3.17864% 0 4.16864%;
 		background: url(../../assets/img/pro-bg.png) no-repeat;
 		background-size: 100% 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 
-		ul{
+		ul {
 			display: flex;
-			li{
+			li {
 				width: 6.845408%;
 				margin-right: 2.246%;
-				&:last-child{
+				&:last-child {
 					margin-right: 0;
 				}
 			}
-			div{
+			div {
 				width: 100%;
 				_height: 47.619048%;
-				img{
+				img {
 					width: 100%;
 					height: 100%;
 				}
 			}
-			.v-arrow{
+			.v-arrow {
 				_margin: 0 0.803213%;
 			}
-			p{
+			p {
 				text-align: center;
 				color: #00ffd6;
 				margin-top: 20px;
@@ -200,7 +233,8 @@
 			}
 		}
 	}
-	.v-lists{
+
+	.v-lists {
 		display: none;
 		width: 100%;
 		background: url(../../assets/img/v-lists-bg.png) repeat-y;
@@ -208,27 +242,58 @@
 		margin-top: 20px;
 		padding: 1px 0 46px 0;
 
-		table{
+		table {
 			width: 100%;
 		}
-		tr{
+		tr {
 			width: 10%;
 
-			td{
+			td {
 				border-bottom: 1px solid #394157;
 				border-right: 1px solid #394157;
 
-				&:last-child{
+				&:last-child {
 					border-right: none;
 				}
 
-				p{
+				p, div {
 					color: #55d7ff;
 					line-height: 30px;
 					text-align: center;
 					font-size: 16px;
+
+					.v-more {
+						position: relative;
+						top: 0px;
+						left: 0px;
+						color: #00ffd6;
+						font-size: 14px;
+						cursor: pointer;
+						display: inline-block;
+
+						.v-more-lists {
+							display: none;
+							position: absolute;
+							top: -102px;
+							left: 38px;
+							width: 210px;
+							height: 240px;
+							overflow-y: auto;
+							background: url(../../assets/img/more-bg.png) repeat-y;
+							background-size: 100% 100%;
+							div{
+								padding: 10px 0;
+							}
+						}
+
+						&:hover{
+							.v-more-lists {
+								display: block;
+							}
+						}
+					}
 				}
-				a{
+				a {
 					display: block;
 					text-align: center;
 					line-height: 40px;
@@ -237,7 +302,7 @@
 			}
 		}
 
-		.showmore{
+		.showmore {
 			position: absolute;
 			bottom: 0;
 			left: 0;
@@ -248,7 +313,7 @@
 			background-size: 100% 100%;
 			transition: all 0.5s ease 0s;
 
-			a{
+			a {
 				color: #00ffd6;
 			}
 			a.active {
@@ -256,26 +321,30 @@
 			}
 		}
 	}
-	.showall{
+
+	.showall {
 		height: 505px;
 		overflow: hidden;
 		transition: all 0.5s ease 0s;
 	}
-	.showall.active{
+
+	.showall.active {
 		height: auto;
 		transition: all 0.5s ease 0s;
 	}
-	.el-icon-arrow-up:before{
+
+	.el-icon-arrow-up:before {
 		color: #00ffd6 !important;
 	}
 
 	//进场动画
-	.v-animate{
-		li{
+	.v-animate {
+		li {
 			_display: none;
 			opacity: 0;
 		}
 	}
+
 	.animated {
 		animation-duration: 0.3s;
 		animation-fill-mode: both;
@@ -287,7 +356,7 @@
 			visibility: visible;
 			opacity: 0.2;
 		}
-		50%{
+		50% {
 			transform: scale(1.6);
 		}
 		100% {
