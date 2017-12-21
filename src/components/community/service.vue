@@ -239,7 +239,7 @@
 				//设置title
 				this.mapTitle = this.packData.package
 				//设置跳到哪里
-				this.toLink = '#/service/xxx'
+				this.toLink = '#/service/cp'
 				//点击后设置列表的数据
 				this.oneData = this.onePackData
 

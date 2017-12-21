@@ -30,9 +30,9 @@ export default new Router({
 			component: CommunityStatistics
 		},
 		{
-			path: '/service/cm',  //打包站统计
-			name: 'CommunityStatistics',
-			component: CommunityStatistics
+			path: '/service/cp',  //打包站统计
+			name: 'CommunityMap',
+			component: CommunityMap
 		},
 		{
 			path: '/prc',  //溯源展示
