@@ -40,12 +40,12 @@ export default new Router({
 			component: Process
 		},
 		{
-			path: '/prc/tradepic', //轮播图
+			path: '/prc/tradepic/:id', //轮播图
 			name: 'TradePic',
 			component: TradePic
 		},
 		{
-			path: '/prc/routes', //地图线路规划
+			path: '/prc/routes/:id', //地图线路规划
 			name: 'RoutesLine',
 			component: RoutesLine
 		},

@@ -19,7 +19,7 @@
 				</el-form-item>
 				<el-form-item label="所属地区：">
 					<el-select v-model="searchData.countyName" placeholder="请选择" :style="{'width': '120px'}">
-						<el-option label="请选择" value=""></el-option>
+						<el-option label="请选择" value="0"></el-option>
 						<el-option
 								v-for="(item, index) in countyLists"
 								:key="item.index"
@@ -142,23 +142,18 @@
 					cityName: '蚌埠市',
 					cityId: 103,  //市
 					countyName: '请选择',  //区
-					countyId: 1024,  //区
+					countyId: 1042,  //区
 					startDate: '',
 					endDate: ''
 				},
 				len: 102,
-				mapTitle: '',
+				mapTitle: 'xxx服务亭',
 				toLink: '#/service/cs',
 				mapDataService: [], //地图data
 				mapDataPack: [], //地图data
 				serviceSHow: 9,  //显示zIndex 服务亭
 				packSHow: 8,   //显示zIndex 打包站
 
-				//top search
-				formInline: {
-					city: '蚌埠市',
-					area: '蚌山区'
-				},
 				pickerOptions1: {
 					disabledDate(time) {
 						return time.getTime() > Date.now();
@@ -211,8 +206,9 @@
 					var geoCoord = data[i].coordinate //取坐标
 					if (geoCoord) {
 						res.push({
-							name: data[i].name,
-							value: geoCoord.concat(data[i].value)
+							name: data[i].name, //服务亭name
+							value: geoCoord.concat(data[i].value), //显示圆点大小
+							id: data[i].id //服务亭id
 						});
 					}
 				}
@@ -231,6 +227,7 @@
 				//点击后设置列表的数据
 				this.oneData = this.oneServiceData
 
+				this.getOneServiceData('', 1)
 			},
 			checkPack() {
 				this.checkElm = false
@@ -243,6 +240,8 @@
 				//点击后设置列表的数据
 				this.oneData = this.onePackData
 
+				this.getOneServiceData('', 2)
+
 			},
 
 			//获取默认加载的全部数据
@@ -253,7 +252,7 @@
 					if(res.code != 0) return alert(res.msg)
 					//区列表
 					this.countyLists = res.data.country
-					//console.log(res.data);
+//					console.log(res.data);
 					//总数据量
 					this.serviceData = {
 						order_recycle_weight: res.data.deliveryList.order_recycle_weight || 0, //回收货物总重量
@@ -263,16 +262,44 @@
 					//默认设置地图title
 					this.mapTitle = `蚌埠市服务亭共计${res.data.deliveryList.houseNum || 0}个`
 
-				}).catch((e) => {
+					//调用接口加载服务亭数据
+					let potList = res.data.potList
+					//if(! potList.length) return alert('没有获取到服务亭信息')
+
+					let serviceData = []
+					potList.forEach( (item) => {
+						let mapObj = {
+							id: item.id,
+							name: item.nickname,
+							value: 140,
+							coordinate: [item.pot_x, item.pot_y]
+						}
+						serviceData.push(mapObj)
+					})
+
+					this.mapDataService = serviceData
+					/*[
+						{id: 1, name: 'a', value: 160, coordinate: [121.15, 31.89]},
+						{id: 2, name: '鄂尔多斯', value: 160, coordinate: [109.781327, 39.608266]},
+						{id: 3, name: '招远', value: 160, coordinate: [120.38, 37.35]},
+						{id: 4, name: '舟山', value: 160, coordinate: [122.207216, 29.985295]},
+						{id: 5, name: '齐齐哈尔', value: 160, coordinate: [123.97, 47.33]},
+						{id: 6, name: '蚌埠市', value: 180, coordinate: [117.385164, 32.922009]}
+					]*/
+					return serviceData
+				}).then( (data) => {
+					this.initServiceMap()
+				} ).catch((e) => {
 					console.log(e);
 				})
+
 				//获取打包站总体数据
 				axios.get(`/countpackage/countsite?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
 					let res = data.data
 					if(res.code != 0) return alert(res.msg)
 					//打包站的区列表  蚌埠市的区域列表应该都是一样的
 					//this.countyLists = res.data.country
-					//console.log(res.data);
+					console.log(res.data)
 
 					//总数据量
 					this.packData = {
@@ -281,68 +308,87 @@
 						package: `蚌埠市打包站共计${res.data.siteliat.package || 0}个`, //服务亭总数量
 					}
 
-				}).catch((e) => {
+					//调用接口加载打包站map数据
+					let potList = res.data.potList
+					//if(! potList.length) return alert('没有获取到打包站信息')
+
+					let packData = []
+					potList.forEach( (item) => {
+						let mapObj = {
+							id: item.id,
+							name: item.site_name,
+							value: 140,
+							coordinate: [item.longitude, item.latitude]
+						}
+						packData.push(mapObj)
+					})
+
+					this.mapDataPack = packData
+					/*[
+						{id: 1, name: 'a', value: 160, coordinate: [121.15, 31.89]},
+						{id: 2, name: '鄂尔多斯', value: 160, coordinate: [109.781327, 39.608266]},
+						{id: 3, name: '招远', value: 160, coordinate: [120.38, 37.35]},
+						{id: 4, name: '舟山', value: 160, coordinate: [122.207216, 29.985295]},
+						{id: 5, name: '齐齐哈尔', value: 160, coordinate: [123.97, 47.33]},
+						{id: 6, name: '蚌埠市', value: 180, coordinate: [117.385164, 32.922009]}
+					]*/
+					return packData
+
+				}).then( (data) => {
+					if(data) this.initPackMap()
+				} ).catch((e) => {
 					console.log(e);
 				})
-
-				//调用接口加载默认数据 -- 服务亭
-				this.mapDataService = [
-					{name: '海门', value: 160, coordinate: [121.15, 31.89]},
-					{name: '鄂尔多斯', value: 160, coordinate: [109.781327, 39.608266]},
-					{name: '招远', value: 160, coordinate: [120.38, 37.35]},
-					{name: '舟山', value: 160, coordinate: [122.207216, 29.985295]},
-					{name: '齐齐哈尔', value: 160, coordinate: [123.97, 47.33]},
-					{name: '蚌埠市', value: 180, coordinate: [117.385164, 32.922009]}
-				]
-
-				//调用接口加载默认数据 -- 打包站
-				this.mapDataPack = [
-					{name: '海门1', value: 160, coordinate: [121.15, 31.89]},
-					{name: '鄂尔多斯1', value: 160, coordinate: [109.781327, 39.608266]},
-					{name: '招远1', value: 160, coordinate: [120.38, 37.35]},
-					{name: '舟山1', value: 160, coordinate: [122.207216, 29.985295]},
-					{name: '齐齐哈尔1', value: 160, coordinate: [123.97, 47.33]},
-					{name: '蚌埠市1', value: 180, coordinate: [117.385164, 32.922009]}
-				]
-
 			},
 
 			//获取默认单个服务亭、打包站数据
-			getOneServiceData(nId){
-				//获取服务亭
-				let sId = nId || 15
-				axios.get('/countdelivery/houseList?id=' + sId).then( (data) => {
-					let res = data.data
-					this.oneServiceData = {
-						name: 'xxxxx服务亭', //服务亭名称
-						weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
-						weight: res.weight || '未查到信息', //单个服务亭运输量
-						user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
-					}
-					//设置列表默认显示的数据
-					this.oneData = {
-						name: 'xxxxx服务亭', //服务亭名称
-						weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
-						weight: res.weight || '未查到信息', //单个服务亭运输量
-						user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
-					}
+			getOneServiceData(nId, type){
+				if(type === 1){
+					//获取服务亭
+					let sId = nId || 15
+					axios.get('/countdelivery/houselist?id=' + sId).then( (data) => {
+						let res = data.data
+						console.log('服务亭：');
+						console.log(res);
+						this.oneServiceData = {
+							name: 'xxxxx服务亭', //服务亭名称
+							weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
+							weight: res.weight || '未查到信息', //单个服务亭运输量
+							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
+						}
+						//设置列表默认显示的数据
+//						this.oneData = {
+//							name: 'xxxxx服务亭', //服务亭名称
+//							weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
+//							weight: res.weight || '未查到信息', //单个服务亭运输量
+//							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
+//						}
 
-				}).catch((e) => {
-					console.log(e);
-				})
-				//获取打包站
-				let pId = nId || 31
-				axios.get('/countpackage/siteList?d=' + pId).then( (data) => {
-					let res = data.data
-					this.onePackData = {
-						name: 'xxxxx打包站', //打包站名称
-						weightUser: res.weightUser.weight || '未查到信息', //单个打包站回收量
-						weight: res.weight || '未查到信息', //单个打包站运输量
-						user_mobile: res.weightUser.user_mobile || '未查到信息', //单个打包站总用户数
-					}
-				}).catch((e) => {
-					console.log(e);
-				})
+						//设置list数据
+						this.initOneData(type)
+
+					}).catch((e) => {
+						console.log(e);
+					})
+				}else if(type === 2){
+					//获取打包站
+					let pId = nId || 31
+					axios.get('/countpackage/sitelist?id=' + pId).then( (data) => {
+						let res = data.data
+						console.log('打包站：');
+						console.log(res);
+						this.onePackData = {
+							name: 'xxxxx打包站', //打包站名称
+							weightUser: res.weightUser.weight || '未查到信息', //单个打包站回收量
+							weight: res.weight || '未查到信息', //单个打包站运输量
+							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个打包站总用户数
+						}
+						//设置list数据
+						this.initOneData(type)
+					}).catch((e) => {
+						console.log(e);
+					})
+				}
 			},
 
 			//查询数据
@@ -350,6 +396,531 @@
 				console.log('查询!');
 				console.log(this.searchData)
 			},
+
+			//初始化map
+			initServiceMap() {
+				//服务亭
+				let dataService = this.mapDataService
+				//服务亭
+				this.optionService = {
+					//backgroundColor: '#404a59',
+					title: {
+						text: '',//标题
+						subtext: '',//子标题
+						sublink: '#',//subtext跳转地址
+						left: 'center',
+						textStyle: {
+							color: '#fff'
+						}
+					},
+					tooltip: {
+						trigger: 'item',
+						show: true,
+						formatter: function (params, ticket, callback) {
+							var $pna = params.name;
+							console.log($pna);
+							var res = '';
+							for (var i = 0; i < dataService.length; i++) {
+								if (dataService[i].name == $pna) {
+									res = `${dataService[i].name}`;//设置自定义数据的模板，这里的模板是图片
+									//console.log(res);
+									break;
+								}
+							}
+							setTimeout(function () {
+								// 仅为了模拟异步回调
+								callback(ticket, res);//回调函数，这里可以做异步请求加载的一些代码
+							}, 300)
+							return `loading...`;
+						}
+					},
+					bmap: {
+						map: 'china',
+						center: [117.395639, 32.921375], //这个坐标点是显示中国地图的中心：center: [104.114129, 37.550339]
+						zoom: 13, //5是显示全国地图
+						roam: true,
+						mapStyle: {
+							styleJson: [
+								{
+									"featureType": "water", //水的颜色
+									"elementType": "all",
+									"stylers": {
+										"color": "#044161"
+									}
+								},
+								{
+									"featureType": "land", //地图背景色 调整土地颜色
+									"elementType": "all",
+									"stylers": {
+										"color": "#004981"
+									}
+								},
+								{
+									'featureType': 'railway', //铁路线
+									'elementType': 'all',
+									'stylers': {
+										'visibility': 'off'
+									}
+								},
+								{
+									"featureType": "boundary", //china轮廓线
+									"elementType": "geometry",
+									"stylers": {
+										"color": "#57d2f9", //地图边框颜色
+										"areaColor": '#0e2338', //各区域底色
+									}
+								},
+								{
+									"featureType": "highway",  //调整高速道路颜色
+									"elementType": "geometry",
+									"stylers": {
+										"color": "#004981"
+									}
+								},
+								{
+									"featureType": "highway",  //调整高速道路颜色
+									"elementType": "geometry.fill",
+									"stylers": {
+										"color": "#005b96",
+										"lightness": 1
+									}
+								},
+								{
+									"featureType": "highway", //调整高速道路是否可现
+									"elementType": "labels",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "arterial",
+									"elementType": "geometry",
+									"stylers": {
+										"color": "#004981"
+									}
+								},
+								{
+									"featureType": "arterial",
+									"elementType": "geometry.fill",
+									"stylers": {
+										"color": "#00508b"
+									}
+								},
+								{
+									"featureType": "poi",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "green",
+									"elementType": "all",
+									"stylers": {
+										"color": "#056197",
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "subway", //调整地铁颜色
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "manmade",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "local",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "arterial",
+									"elementType": "labels",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "boundary", //分界线
+									"elementType": "geometry.fill",
+									"stylers": {
+										"color": "#029fd4"
+									}
+								},
+								{
+									"featureType": "building", //调整建筑物颜色
+									"elementType": "all",
+									"stylers": {
+										"color": "#1a5787"
+									}
+								},
+								{
+									"featureType": "label",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								}
+							]
+						}
+					},
+					series: [
+//          {
+//            name: 'pm2.5',
+//            type: 'scatter',
+//            coordinateSystem: 'bmap',
+//            data: this.convertData(data),
+//            symbolSize: function (val) {
+//              return val[2] / 10;
+//            },
+//            label: {
+//              normal: {
+//                formatter: '{b}',
+//                position: 'right',
+//                show: false
+//              },
+//              emphasis: {
+//                show: true
+//              }
+//            },
+//            itemStyle: {
+//              normal: {
+//                color: '#ddb926'
+//              }
+//            }
+//          },
+						{
+							name: '',
+							type: 'effectScatter', // 表的类型 这里是散点
+							coordinateSystem: 'bmap', // 使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件
+							data: this.convertData(dataService),
+							symbolSize: function (val) {
+								return val[2] / 14;  //圆圈大小
+							},
+							showEffectOn: 'render', //圆点是否闪烁 是：render 否：emphasis
+							rippleEffect: {
+								brushType: 'stroke'
+							},
+							hoverAnimation: true,
+							label: {
+								normal: {
+									formatter: '{b}',
+									position: 'right',
+									show: true
+								}
+							},
+							itemStyle: {
+								normal: {
+									color: 'rgb(245, 184, 0)', //圆圈颜色
+									shadowBlur: 10,
+									shadowColor: '#333'
+								}
+							},
+							zlevel: 1
+						},
+						{
+							type: 'custom',
+							coordinateSystem: 'bmap',
+							itemStyle: {
+								normal: {
+									opacity: 0.8
+								}
+							},
+							animation: false,
+							silent: true,
+							data: [0],
+							z: -10
+						}
+					]
+				}
+				//初始化服务亭
+				// 基于准备好的dom，初始化echarts实例
+				var myChartService = echarts.init(document.getElementById('main'));
+				myChartService.setOption(this.optionService)
+				//map上的点的点击事件
+				myChartService.on('click', (params) => {
+					this.searchData.area = params.data.name //设置默认加载数据的searchData
+					let id = params.data.id
+					this.getOneServiceData(id, 1)
+				})
+			},
+			initPackMap() {
+				//打包站
+				let dataPace = this.mapDataPack
+				//打包站
+				this.optionPack = {
+					//backgroundColor: '#404a59',
+					title: {
+						text: '',//标题
+						subtext: '',//子标题
+						sublink: '#',//subtext跳转地址
+						left: 'center',
+						textStyle: {
+							color: '#fff'
+						}
+					},
+					tooltip: {
+						trigger: 'item',
+						show: true,
+						formatter: function (params, ticket, callback) {
+							var $pna = params.name;
+							//console.log($pna);
+							var res = '';
+							for (var i = 0; i < dataPace.length; i++) {
+								if (dataPace[i].name == $pna) {
+									res = `${dataPace[i].name}`;//设置自定义数据的模板，这里的模板是图片
+									//console.log(res);
+									break;
+								}
+							}
+							setTimeout(function () {
+								// 仅为了模拟异步回调
+								callback(ticket, res);//回调函数，这里可以做异步请求加载的一些代码
+							}, 300)
+							return `loading...`;
+						}
+					},
+					bmap: {
+						map: 'china',
+						center: [104.114129, 37.550339],
+						zoom: 5,
+						roam: true,
+						mapStyle: {
+							styleJson: [
+								{
+									"featureType": "water", //水的颜色
+									"elementType": "all",
+									"stylers": {
+										"color": "#044161"
+									}
+								},
+								{
+									"featureType": "land", //地图背景色 调整土地颜色
+									"elementType": "all",
+									"stylers": {
+										"color": "#004981"
+									}
+								},
+								{
+									'featureType': 'railway', //铁路线
+									'elementType': 'all',
+									'stylers': {
+										'visibility': 'off'
+									}
+								},
+								{
+									"featureType": "boundary", //china轮廓线
+									"elementType": "geometry",
+									"stylers": {
+										"color": "#57d2f9", //地图边框颜色
+										"areaColor": '#0e2338', //各区域底色
+									}
+								},
+								{
+									"featureType": "highway",  //调整高速道路颜色
+									"elementType": "geometry",
+									"stylers": {
+										"color": "#004981"
+									}
+								},
+								{
+									"featureType": "highway",  //调整高速道路颜色
+									"elementType": "geometry.fill",
+									"stylers": {
+										"color": "#005b96",
+										"lightness": 1
+									}
+								},
+								{
+									"featureType": "highway", //调整高速道路是否可现
+									"elementType": "labels",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "arterial",
+									"elementType": "geometry",
+									"stylers": {
+										"color": "#004981"
+									}
+								},
+								{
+									"featureType": "arterial",
+									"elementType": "geometry.fill",
+									"stylers": {
+										"color": "#00508b"
+									}
+								},
+								{
+									"featureType": "poi",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "green",
+									"elementType": "all",
+									"stylers": {
+										"color": "#056197",
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "subway", //调整地铁颜色
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "manmade",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "local",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "arterial",
+									"elementType": "labels",
+									"stylers": {
+										"visibility": "off"
+									}
+								},
+								{
+									"featureType": "boundary", //分界线
+									"elementType": "geometry.fill",
+									"stylers": {
+										"color": "#029fd4"
+									}
+								},
+								{
+									"featureType": "building", //调整建筑物颜色
+									"elementType": "all",
+									"stylers": {
+										"color": "#1a5787"
+									}
+								},
+								{
+									"featureType": "label",
+									"elementType": "all",
+									"stylers": {
+										"visibility": "off"
+									}
+								}
+							]
+						}
+					},
+					series: [
+//          {
+//            name: 'pm2.5',
+//            type: 'scatter',
+//            coordinateSystem: 'bmap',
+//            data: this.convertData(data),
+//            symbolSize: function (val) {
+//              return val[2] / 10;
+//            },
+//            label: {
+//              normal: {
+//                formatter: '{b}',
+//                position: 'right',
+//                show: false
+//              },
+//              emphasis: {
+//                show: true
+//              }
+//            },
+//            itemStyle: {
+//              normal: {
+//                color: '#ddb926'
+//              }
+//            }
+//          },
+						{
+							name: '',
+							type: 'effectScatter', // 表的类型 这里是散点
+							coordinateSystem: 'bmap', // 使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件
+							data: this.convertData(dataPace),
+							symbolSize: function (val) {
+								return val[2] / 14;  //圆圈大小
+							},
+							showEffectOn: 'render', //圆点是否闪烁 是：render 否：emphasis
+							rippleEffect: {
+								brushType: 'stroke'
+							},
+							hoverAnimation: true,
+							label: {
+								normal: {
+									formatter: '{b}',
+									position: 'right',
+									show: true
+								}
+							},
+							itemStyle: {
+								normal: {
+									color: 'rgb(232, 33, 79)', //圆圈颜色
+									shadowBlur: 10,
+									shadowColor: '#333'
+								}
+							},
+							zlevel: 1
+						},
+						{
+							type: 'custom',
+							coordinateSystem: 'bmap',
+							itemStyle: {
+								normal: {
+									opacity: 0.8
+								}
+							},
+							animation: false,
+							silent: true,
+							data: [0],
+							z: -10
+						}
+					]
+				}
+				//初始化打包站
+				// 基于准备好的dom，初始化echarts实例
+				var myChartPack = echarts.init(document.getElementById('mainPack'));
+				// 使用刚指定的配置项和数据显示图表。
+				myChartPack.setOption(this.optionPack);
+
+				myChartPack.on('click', (params) => {
+					this.searchData.area = params.data.name //设置默认加载数据的searchData
+					let id = params.data.id
+					this.getOneServiceData(id, 2)
+				})
+				setTimeout(() => {
+					var elm = document.getElementsByClassName('anchorBL')
+					for (let i = 0; i < elm.length; i++) {
+						elm[i].style.display = 'none'
+					}
+				}, 100)
+			},
+
+			//页面加载默认设置一次列表数据
+			initOneData(type) {
+				if(type === 1) this.oneData = this.oneServiceData
+				if(type === 2) this.oneData = this.onePackData
+			}
 		},
 		components: {
 
@@ -363,527 +934,11 @@
 			//调用区县数据 xx
 			this.getSubData()
 
-			//获取某个服务亭的数据
-			this.getOneServiceData()
+			//获取某个服务亭\打包站的数据 type:1 服务亭 type:2 打包站
+			this.getOneServiceData('', 1)
 
-			//服务亭
-			var dataService = this.mapDataService
-			//打包站
-			var dataPace = this.mapDataPack
+			//页面加载默认设置一次列表数据
 
-			//服务亭
-			this.optionService = {
-				//backgroundColor: '#404a59',
-				title: {
-					text: '',//标题
-					subtext: '',//子标题
-					sublink: '#',//subtext跳转地址
-					left: 'center',
-					textStyle: {
-						color: '#fff'
-					}
-				},
-				tooltip: {
-					trigger: 'item',
-					show: true,
-					formatter: function (params, ticket, callback) {
-						var $pna = params.name;
-						console.log($pna);
-						var res = '';
-						for (var i = 0; i < dataService.length; i++) {
-							if (dataService[i].name == $pna) {
-								res = `${dataService[i].name}服务亭`;//设置自定义数据的模板，这里的模板是图片
-								//console.log(res);
-								break;
-							}
-						}
-						setTimeout(function () {
-							// 仅为了模拟异步回调
-							callback(ticket, res);//回调函数，这里可以做异步请求加载的一些代码
-						}, 300)
-						return `loading...`;
-					}
-				},
-				bmap: {
-					map: 'china',
-					center: [104.114129, 37.550339],
-					zoom: 5,
-					roam: true,
-					mapStyle: {
-						styleJson: [
-							{
-								"featureType": "water", //水的颜色
-								"elementType": "all",
-								"stylers": {
-									"color": "#044161"
-								}
-							},
-							{
-								"featureType": "land", //地图背景色 调整土地颜色
-								"elementType": "all",
-								"stylers": {
-									"color": "#004981"
-								}
-							},
-							{
-								'featureType': 'railway', //铁路线
-								'elementType': 'all',
-								'stylers': {
-									'visibility': 'off'
-								}
-							},
-							{
-								"featureType": "boundary", //china轮廓线
-								"elementType": "geometry",
-								"stylers": {
-									"color": "#57d2f9", //地图边框颜色
-									"areaColor": '#0e2338', //各区域底色
-								}
-							},
-							{
-								"featureType": "highway",  //调整高速道路颜色
-								"elementType": "geometry",
-								"stylers": {
-									"color": "#004981"
-								}
-							},
-							{
-								"featureType": "highway",  //调整高速道路颜色
-								"elementType": "geometry.fill",
-								"stylers": {
-									"color": "#005b96",
-									"lightness": 1
-								}
-							},
-							{
-								"featureType": "highway", //调整高速道路是否可现
-								"elementType": "labels",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "arterial",
-								"elementType": "geometry",
-								"stylers": {
-									"color": "#004981"
-								}
-							},
-							{
-								"featureType": "arterial",
-								"elementType": "geometry.fill",
-								"stylers": {
-									"color": "#00508b"
-								}
-							},
-							{
-								"featureType": "poi",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "green",
-								"elementType": "all",
-								"stylers": {
-									"color": "#056197",
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "subway", //调整地铁颜色
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "manmade",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "local",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "arterial",
-								"elementType": "labels",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "boundary", //分界线
-								"elementType": "geometry.fill",
-								"stylers": {
-									"color": "#029fd4"
-								}
-							},
-							{
-								"featureType": "building", //调整建筑物颜色
-								"elementType": "all",
-								"stylers": {
-									"color": "#1a5787"
-								}
-							},
-							{
-								"featureType": "label",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							}
-						]
-					}
-				},
-				series: [
-//          {
-//            name: 'pm2.5',
-//            type: 'scatter',
-//            coordinateSystem: 'bmap',
-//            data: this.convertData(data),
-//            symbolSize: function (val) {
-//              return val[2] / 10;
-//            },
-//            label: {
-//              normal: {
-//                formatter: '{b}',
-//                position: 'right',
-//                show: false
-//              },
-//              emphasis: {
-//                show: true
-//              }
-//            },
-//            itemStyle: {
-//              normal: {
-//                color: '#ddb926'
-//              }
-//            }
-//          },
-					{
-						name: '',
-						type: 'effectScatter', // 表的类型 这里是散点
-						coordinateSystem: 'bmap', // 使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件
-						data: this.convertData(dataService),
-						symbolSize: function (val) {
-							return val[2] / 14;  //圆圈大小
-						},
-						showEffectOn: 'render', //圆点是否闪烁 是：render 否：emphasis
-						rippleEffect: {
-							brushType: 'stroke'
-						},
-						hoverAnimation: true,
-						label: {
-							normal: {
-								formatter: '{b}',
-								position: 'right',
-								show: true
-							}
-						},
-						itemStyle: {
-							normal: {
-								color: 'rgb(245, 184, 0)', //圆圈颜色
-								shadowBlur: 10,
-								shadowColor: '#333'
-							}
-						},
-						zlevel: 1
-					},
-					{
-						type: 'custom',
-						coordinateSystem: 'bmap',
-						itemStyle: {
-							normal: {
-								opacity: 0.8
-							}
-						},
-						animation: false,
-						silent: true,
-						data: [0],
-						z: -10
-					}
-				]
-			}
-			//打包站
-			this.optionPack = {
-				//backgroundColor: '#404a59',
-				title: {
-					text: '',//标题
-					subtext: '',//子标题
-					sublink: '#',//subtext跳转地址
-					left: 'center',
-					textStyle: {
-						color: '#fff'
-					}
-				},
-				tooltip: {
-					trigger: 'item',
-					show: true,
-					formatter: function (params, ticket, callback) {
-						var $pna = params.name;
-						console.log($pna);
-						var res = '';
-						for (var i = 0; i < dataPace.length; i++) {
-							if (dataPace[i].name == $pna) {
-								res = `${dataPace[i].name}服务亭`;//设置自定义数据的模板，这里的模板是图片
-								//console.log(res);
-								break;
-							}
-						}
-						setTimeout(function () {
-							// 仅为了模拟异步回调
-							callback(ticket, res);//回调函数，这里可以做异步请求加载的一些代码
-						}, 300)
-						return `loading...`;
-					}
-				},
-				bmap: {
-					map: 'china',
-					center: [104.114129, 37.550339],
-					zoom: 5,
-					roam: true,
-					mapStyle: {
-						styleJson: [
-							{
-								"featureType": "water", //水的颜色
-								"elementType": "all",
-								"stylers": {
-									"color": "#044161"
-								}
-							},
-							{
-								"featureType": "land", //地图背景色 调整土地颜色
-								"elementType": "all",
-								"stylers": {
-									"color": "#004981"
-								}
-							},
-							{
-								'featureType': 'railway', //铁路线
-								'elementType': 'all',
-								'stylers': {
-									'visibility': 'off'
-								}
-							},
-							{
-								"featureType": "boundary", //china轮廓线
-								"elementType": "geometry",
-								"stylers": {
-									"color": "#57d2f9", //地图边框颜色
-									"areaColor": '#0e2338', //各区域底色
-								}
-							},
-							{
-								"featureType": "highway",  //调整高速道路颜色
-								"elementType": "geometry",
-								"stylers": {
-									"color": "#004981"
-								}
-							},
-							{
-								"featureType": "highway",  //调整高速道路颜色
-								"elementType": "geometry.fill",
-								"stylers": {
-									"color": "#005b96",
-									"lightness": 1
-								}
-							},
-							{
-								"featureType": "highway", //调整高速道路是否可现
-								"elementType": "labels",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "arterial",
-								"elementType": "geometry",
-								"stylers": {
-									"color": "#004981"
-								}
-							},
-							{
-								"featureType": "arterial",
-								"elementType": "geometry.fill",
-								"stylers": {
-									"color": "#00508b"
-								}
-							},
-							{
-								"featureType": "poi",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "green",
-								"elementType": "all",
-								"stylers": {
-									"color": "#056197",
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "subway", //调整地铁颜色
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "manmade",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "local",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "arterial",
-								"elementType": "labels",
-								"stylers": {
-									"visibility": "off"
-								}
-							},
-							{
-								"featureType": "boundary", //分界线
-								"elementType": "geometry.fill",
-								"stylers": {
-									"color": "#029fd4"
-								}
-							},
-							{
-								"featureType": "building", //调整建筑物颜色
-								"elementType": "all",
-								"stylers": {
-									"color": "#1a5787"
-								}
-							},
-							{
-								"featureType": "label",
-								"elementType": "all",
-								"stylers": {
-									"visibility": "off"
-								}
-							}
-						]
-					}
-				},
-				series: [
-//          {
-//            name: 'pm2.5',
-//            type: 'scatter',
-//            coordinateSystem: 'bmap',
-//            data: this.convertData(data),
-//            symbolSize: function (val) {
-//              return val[2] / 10;
-//            },
-//            label: {
-//              normal: {
-//                formatter: '{b}',
-//                position: 'right',
-//                show: false
-//              },
-//              emphasis: {
-//                show: true
-//              }
-//            },
-//            itemStyle: {
-//              normal: {
-//                color: '#ddb926'
-//              }
-//            }
-//          },
-					{
-						name: '',
-						type: 'effectScatter', // 表的类型 这里是散点
-						coordinateSystem: 'bmap', // 使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件
-						data: this.convertData(dataPace),
-						symbolSize: function (val) {
-							return val[2] / 14;  //圆圈大小
-						},
-						showEffectOn: 'render', //圆点是否闪烁 是：render 否：emphasis
-						rippleEffect: {
-							brushType: 'stroke'
-						},
-						hoverAnimation: true,
-						label: {
-							normal: {
-								formatter: '{b}',
-								position: 'right',
-								show: true
-							}
-						},
-						itemStyle: {
-							normal: {
-								color: 'rgb(232, 33, 79)', //圆圈颜色
-								shadowBlur: 10,
-								shadowColor: '#333'
-							}
-						},
-						zlevel: 1
-					},
-					{
-						type: 'custom',
-						coordinateSystem: 'bmap',
-						itemStyle: {
-							normal: {
-								opacity: 0.8
-							}
-						},
-						animation: false,
-						silent: true,
-						data: [0],
-						z: -10
-					}
-				]
-			}
-
-			// =========================================//
-			//初始化服务亭
-			// 基于准备好的dom，初始化echarts实例
-			var myChartService = echarts.init(document.getElementById('main'));
-			// 使用刚指定的配置项和数据显示图表。
-			myChartService.setOption(this.optionService);
-
-			// =========================================//
-			//初始化打包站
-			// 基于准备好的dom，初始化echarts实例
-			var myChartPack = echarts.init(document.getElementById('mainPack'));
-			// 使用刚指定的配置项和数据显示图表。
-			myChartPack.setOption(this.optionPack);
-
-			setTimeout(() => {
-				var elm = document.getElementsByClassName('anchorBL')
-				for (let i = 0; i < elm.length; i++) {
-					elm[i].style.display = 'none'
-				}
-			}, 100)
-
-			myChartService.on('click', (params) => {
-				this.searchData.area = params.data.name //设置默认加载数据的searchData
-				alert(params.data.name);
-			})
-
-			myChartPack.on('click', (params) => {
-				this.searchData.area = params.data.name //设置默认加载数据的searchData
-				alert(params.data.name);
-			})
 		}
 	}
 </script>

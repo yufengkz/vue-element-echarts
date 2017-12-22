@@ -18,6 +18,9 @@ module.exports = {
 	    '/countpackage/*':{
 		    target:'http://192.168.89.1:8080/sound-recycle-count'
 	    },
+	    '/userfactory/*':{
+		    target:'http://192.168.89.15:8080/sound-recycle-count'
+	    },
     },
 
     // Various Dev Server settings

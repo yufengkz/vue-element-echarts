@@ -70,66 +70,57 @@
 		<div ref="vLists" class=v-lists   :class="{showall: true, active: showall}">
 			<table>
 				<tbody>
-				<tr v-for="(item, index) in data" :key="item.id">
+				<tr v-for="(item, index) in data" :key="index">
 					<td>
-						<p>{{item.id}}</p>
-						<p>100513910637877</p>
-						<p>No.20171127</p>
+						<p>{{item.userName}}</p>
+						<p>{{item.address}}</p>
+						<p>{{item.orderNum}}</p>
+						<p>No.{{item.recycleOrderCtime}}</p>
 					</td>
 					<td>
-						<p>华美家园服务亭</p>
-						<p>No.20171127</p>
-						<div>废纸 20kg 共计20元
-							<span class="v-more"> 更多>
+						<p>{{item.houseName}}</p>
+						<p>No.{{item.orderNum}}</p>
+						<div>
+							<span class="v-more" @mouseover="_getRecycleDetail(item.orderNum)"> 查看回收品类 >
 								<div class="v-more-lists">
 									<div>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
-										<p>花纸 10kg 共计30元</p>
+										<p v-for="(items, index) in classIfyData">
+											{{items.recycleTypeTitle}} {{items.weight}}KG 共计{{items.totalPrice}}元
+										</p>
 									</div>
 								</div>
 							</span>
 						</div>
-						<p>创建时间：11-27 15：00</p>
-						<router-link to="/prc/tradepic">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
+						<p>创建时间：{{item.recycleOrderCtime}}</p>
+						<router-link :to="'/prc/tradepic/'+item.orderNum">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
 					</td>
 					<td>
-						<p>No.1001</p>
-						<p>车牌号：京A00001</p>
-						<p>司机名称：王博1</p>
-						<p>公司：锦秋货运</p>
-						<p>发货时间：2017-11-27 18:00</p>
-						<p>交货时间：2017-11-27 20:00</p>
-						<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
+						<p>No.{{item.flowOrderNum}}</p>
+						<p>车牌号：{{item.carrierCarnum}}</p>
+						<p>司机名称：{{item.shipMentCarrierName}}</p>
+						<!--<p>公司</p>-->
+						<p>发货时间：{{item.sendTime}}</p>
+						<p>交货时间：{{item.arriveTime}}</p>
+						<router-link :to="'/prc/routes/'+item.flowOrderNum">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
 					</td>
 					<td>
-						<p>No.1001</p>
-						<p>1号打包站-华美</p>
-						<router-link to="/prc/tradepic">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
+						<p>No.{{item.flowOrderNum}}</p>
+						<p>{{item.substationName}}</p>
+						<router-link :to="'/prc/tradepic/'+item.flowOrderNum">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
 					</td>
 					<td>
-						<p>No.2001</p>
-						<p>车牌号：京A00002</p>
-						<p>司机名称：王博2</p>
-						<p>公司：锦秋货运</p>
-						<p>发货时间：2017-11-27 18:00</p>
-						<p>交货时间：2017-11-27 20:00</p>
-						<p>华美-1号打包站-1号工厂</p>
-						<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
+						<p>No.{{item.arteryOrderNum}}</p>
+						<p>车牌号：{{item.otcarNum}}</p>
+						<p>司机名称：{{item.carrierName}}</p>
+						<p>公司：{{item.carCompany}}</p>
+						<p>发货时间：{{item.sendTransportTime}}</p>
+						<p>交货时间：{{item.transportArriveTime}}</p>
+						<p>{{item.houseName}}-{{item.substationName}}</p>
+						<!--<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>-->
 					</td>
 					<td>
-						<p>No.2001</p>
-						<p>1号工厂-1号打包站-华美</p>
+						<p>No.{{item.arteryOrderNum}}</p>
+						<p>{{item.houseName}}-{{item.substationName}}</p>
 					</td>
 				</tr>
 				</tbody>
@@ -149,14 +140,29 @@
 		data() {
 			return {
 				data: [],
+				classIfyData: [],
 				loaded: false,
 				showall: false
 			}
 		},
 		methods: {
+			//获取列表信息
 			_getLists() {
-				axios.get('../../../static/data/v-lists.json').then((res) => {
-					this.data = res.data
+				axios.get('/userfactory/usertofactorys').then((data) => {
+					//调试先反转一下
+					this.data = data.data.messageList.reverse()
+				}).catch((e) => {
+					console.log(e);
+				})
+			},
+			//查看回收品分类
+			_getRecycleDetail(orderNum){
+				axios.get('/userfactory/recycledetail?orderNum=' + orderNum).then((data) => {
+					let res = data.data.recycleList
+					if(res.length == 0) res = [{recycleTypeTitle: ' ', weight: '-', totalPrice: '-'}]
+					this.classIfyData = res
+				}).catch((e) => {
+					console.log(e);
 				})
 			},
 			showMore(event) {
@@ -187,10 +193,13 @@
 				for (let i = 0; i < aLi.length; i++) {
 					runAsync(aLi[i], 300, i)
 				}
-			}
+			},
+
 		},
 		mounted() {
+			//获取数据列表
 			this._getLists()
+			//调用动画
 			this.animated()
 		}
 	}
@@ -260,7 +269,7 @@
 					color: #55d7ff;
 					line-height: 30px;
 					text-align: center;
-					font-size: 16px;
+					font-size: 14px;
 
 					.v-more {
 						position: relative;
@@ -274,15 +283,18 @@
 						.v-more-lists {
 							display: none;
 							position: absolute;
-							top: -102px;
-							left: 38px;
+							top: -80px;
+							left: 100px;
 							width: 210px;
-							height: 240px;
+							height: 200px;
 							overflow-y: auto;
 							background: url(../../assets/img/more-bg.png) repeat-y;
 							background-size: 100% 100%;
 							div{
 								padding: 10px 0;
+								span{
+									font-size: 12px;
+								}
 							}
 						}
 
@@ -298,6 +310,7 @@
 					text-align: center;
 					line-height: 40px;
 					color: #00ffd6;
+					font-size: 14px;
 				}
 			}
 		}

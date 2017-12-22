@@ -9,6 +9,7 @@
 	</div>
 </template>
 <script>
+	import axios from 'axios'
 	let posiIco = require('../../assets/img/posi.png')
 	export default {
 		name: '',
@@ -16,28 +17,38 @@
 			return {}
 		},
 		mounted() {
+
 			// 百度地图API功能
 			// 创建Map实例
 			var map = new BMap.Map("v-allmap", {enableMapClick: true})
-			map.centerAndZoom(new BMap.Point(121.443532, 31.24603), 15) //中心点
+			map.centerAndZoom(new BMap.Point(121.493262, 31.237015), 15) //中心点 蚌埠 117.395639, 32.921375
 			map.enableScrollWheelZoom(true) //滚轮放大缩小
 			map.setMapStyle({style:'grayscale'}) //设置地图主题
 			//map.enableScrollWheelZoom(true);  //启用滚轮放大缩小
 
-			function showPoly(pointList) {
-
+			function showPoly(pointList, houseName) {
+				console.log(pointList)
+				console.log(houseName)
 				//循环显示点对象
 				for (let c = 0; c < pointList.length; c ++) {
 					//设置定位图标
 					var myPosIcon = new BMap.Icon(posiIco, new BMap.Size(19, 25))
-					//var marker = new BMap.Marker(pointList[c]);
 					var marker = new BMap.Marker(pointList[c], { icon: myPosIcon })
 					map.addOverlay(marker); //画出marker
 					marker.setAnimation(BMAP_ANIMATION_DROP) //设置marker进场动画
 					//将途经点按顺序添加到地图上  显示该点的名称
-					var label = new BMap.Label('服务亭', {
-						offset: new BMap.Size(20, -2) //偏移量
-					});
+
+					//设置旗点和路径点 都是服务亭
+					if(c !== pointList.length - 1){
+						var label = new BMap.Label(houseName[c] + '服务亭', {
+							offset: new BMap.Size(20, -2) //偏移量
+						});
+					}else{
+						//最后一个点是终点 打包站
+						var label = new BMap.Label(houseName[c] + '打包站', {
+							offset: new BMap.Size(20, -2) //偏移量
+						});
+					}
 					label.setStyle({
 						color: '#fff',
 						backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -82,19 +93,40 @@
 
 			}
 
-			//将28个百度坐标点放入数据中
-			var p1 = new BMap.Point(121.443532, 31.24603)
-			var p2 = new BMap.Point(121.481477, 31.240103)
-			var p3 = new BMap.Point(121.493262, 31.237015)
-			var p4 = new BMap.Point(121.494987, 31.230099)
-			var p5 = new BMap.Point(121.489382, 31.225034)
+			// ======================================================== //
+			//map地图画点
+			let orderNum = this.$route.params.id //这个单号有数据30033481512695867208
 
-			var arrayList = []
-			arrayList.push(p1)
-			arrayList.push(p2)
-			arrayList.push(p3)
-			arrayList.push(p4)
-			arrayList.push(p5)
+			let endP = {}
+			let packName
+			let houseName = []
+			axios.get(`/userfactory/checkcartrack?orderNum=${orderNum}`).then( (data) => {
+				let arrayList = []
+				let res = data.data.geographyList
+				console.log(data);
+				res.forEach((item, index) => {
+					let P = new BMap.Point(item.houseX, item.houseY)
+					endP =  new BMap.Point(item.siteX, item.siteY)
+					arrayList.push(P) //把map点放到数组中
+					houseName.push(item.houseName) //把名称放到数组中
+
+					packName = item.siteName
+				})
+
+				arrayList.push(endP)
+				houseName.push(packName)
+
+				return arrayList
+			}).then( (data) => {
+				//显示轨迹
+				showPoly(data, houseName)
+			})
+			// ======================================================== //
+
+			//将28个百度坐标点放入数据中
+//			var p1 = new BMap.Point(121.443532, 31.24603)
+//			var p2 = new BMap.Point(121.481477, 31.240103)
+//			arrayList.push(p5)
 
 			//拖动地图后返回原来位置
 //			setTimeout( () => {
@@ -106,8 +138,6 @@
 //				}
 //			}, 500)
 
-			//显示轨迹
-			showPoly(arrayList)
 		}
 	}
 </script>

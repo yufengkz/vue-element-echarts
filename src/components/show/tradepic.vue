@@ -4,14 +4,35 @@
 			<h3>服务亭现场交易图片</h3>
 		</div>
 		<el-carousel :interval="30000" type="card" height="605px" arrow="always">
-			<el-carousel-item v-for="item in 8" :key="item">
-				<img src="../../assets/img/poly1.jpg" alt="">
+			<el-carousel-item v-for="item in picData" :key="item">
+				<img :src="item" alt="">
 			</el-carousel-item>
 		</el-carousel>
 	</div>
 </template>
 <script>
-	export default {}
+	import axios from 'axios'
+
+	export default {
+		data() {
+			return {
+				picData: []
+			}
+		},
+		mounted() {
+			console.log(this.$route.params.id);
+			let orderNum = this.$route.params.id
+			axios.get(`/userfactory/checkimage?orderNum=${orderNum}`).then( (data) => {
+				let res = data.data
+				let imageUrl = res.imageUrl
+				let imgArr = res.pathList
+				this.picData = imgArr.map( (item) => {
+					return imageUrl + item
+				})
+				console.log(this.picData);
+			})
+		}
+	}
 </script>
 <style scoped lang="less">
 	.v-showbox{
