@@ -13,12 +13,12 @@
 				<i class="el-icon-location"></i>
 			</span>
 				<el-form-item label="所属城市：">
-					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '120px'}">
+					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
 						<el-option label="蚌埠市" value="445"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="所属地区：">
-					<el-select v-model="searchData.countyName" placeholder="请选择" :style="{'width': '120px'}">
+					<el-select v-model="searchData.countyName" placeholder="请选择" :style="{'width': '140px'}">
 						<el-option label="请选择" value="0"></el-option>
 						<el-option
 								v-for="(item, index) in countyLists"
@@ -99,10 +99,10 @@
 					<a v-bind:href="toLink" class="pull-right">查看详情 >></a>
 				</h3>
 				<div class="content" id="main" style="height: 760px;width: 100%;" :style="{'z-index': serviceSHow}">
-					服务亭容器
+					数据加载中...
 				</div>
 				<div class="content" id="mainPack" style="height: 760px;width: 100%;" :style="{'z-index': packSHow}">
-					打包站容器
+					数据加载中...
 				</div>
 			</div>
 		</div>
@@ -348,10 +348,8 @@
 					let sId = nId || 15
 					axios.get('/countdelivery/houselist?id=' + sId).then( (data) => {
 						let res = data.data
-						console.log('服务亭：');
-						console.log(res);
 						this.oneServiceData = {
-							name: 'xxxxx服务亭', //服务亭名称
+							name: res.weightUser.nickname || '未查到信息', //服务亭名称
 							weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
 							weight: res.weight || '未查到信息', //单个服务亭运输量
 							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
@@ -375,10 +373,8 @@
 					let pId = nId || 31
 					axios.get('/countpackage/sitelist?id=' + pId).then( (data) => {
 						let res = data.data
-						console.log('打包站：');
-						console.log(res);
 						this.onePackData = {
-							name: 'xxxxx打包站', //打包站名称
+							name: res.weightUser.site_name || '未查到信息', //打包站名称
 							weightUser: res.weightUser.weight || '未查到信息', //单个打包站回收量
 							weight: res.weight || '未查到信息', //单个打包站运输量
 							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个打包站总用户数

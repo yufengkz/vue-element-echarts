@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class=pro-box   ref="proBox">
+		<div class=pro-box    ref="proBox">
 			<ul class="v-animate" ref="vAnimate">
 				<li>
 					<a href="javascript:;">
@@ -67,20 +67,21 @@
 				</li>
 			</ul>
 		</div>
-		<div ref="vLists" class=v-lists   :class="{showall: true, active: showall}">
-			<table>
-				<tbody>
-				<tr v-for="(item, index) in data" :key="index">
-					<td>
-						<p>{{item.userName}}</p>
-						<p>{{item.address}}</p>
-						<p>{{item.orderNum}}</p>
-						<p>No.{{item.recycleOrderCtime}}</p>
-					</td>
-					<td>
-						<p>{{item.houseName}}</p>
-						<p>No.{{item.orderNum}}</p>
-						<div>
+		<div ref="vLists" class=v-lists    :class="{showall: true, active: showall}">
+			<div v-if="data.length > 0">
+				<table>
+					<tbody>
+					<tr v-for="(item, index) in data" :key="index">
+						<td>
+							<p>{{item.userName}}</p>
+							<p>{{item.address}}</p>
+							<p>{{item.orderNum}}</p>
+							<p>No.{{item.recycleOrderCtime | formatDate}}</p>
+						</td>
+						<td>
+							<p>{{item.houseName}}</p>
+							<p>No.{{item.orderNum}}</p>
+							<div>
 							<span class="v-more" @mouseover="_getRecycleDetail(item.orderNum)"> 查看回收品类 >
 								<div class="v-more-lists">
 									<div>
@@ -90,53 +91,62 @@
 									</div>
 								</div>
 							</span>
-						</div>
-						<p>创建时间：{{item.recycleOrderCtime}}</p>
-						<router-link :to="'/prc/tradepic/'+item.orderNum">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
-					</td>
-					<td>
-						<p>No.{{item.flowOrderNum}}</p>
-						<p>车牌号：{{item.carrierCarnum}}</p>
-						<p>司机名称：{{item.shipMentCarrierName}}</p>
-						<!--<p>公司</p>-->
-						<p>发货时间：{{item.sendTime}}</p>
-						<p>交货时间：{{item.arriveTime}}</p>
-						<router-link :to="'/prc/routes/'+item.flowOrderNum">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
-					</td>
-					<td>
-						<p>No.{{item.flowOrderNum}}</p>
-						<p>{{item.substationName}}</p>
-						<router-link :to="'/prc/tradepic/'+item.flowOrderNum">查看现场交易图片<i class="el-icon-d-arrow-right"></i></router-link>
-					</td>
-					<td>
-						<p>No.{{item.arteryOrderNum}}</p>
-						<p>车牌号：{{item.otcarNum}}</p>
-						<p>司机名称：{{item.carrierName}}</p>
-						<p>公司：{{item.carCompany}}</p>
-						<p>发货时间：{{item.sendTransportTime}}</p>
-						<p>交货时间：{{item.transportArriveTime}}</p>
-						<p>{{item.houseName}}-{{item.substationName}}</p>
-						<!--<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>-->
-					</td>
-					<td>
-						<p>No.{{item.arteryOrderNum}}</p>
-						<p>{{item.houseName}}-{{item.substationName}}</p>
-					</td>
-				</tr>
-				</tbody>
-			</table>
+							</div>
+							<p>创建时间：{{item.recycleOrderCtime | formatDate}}</p>
+							<router-link :to="'/prc/tradepic/'+item.orderNum">查看现场交易图片<i
+									class="el-icon-d-arrow-right"></i></router-link>
+						</td>
+						<td>
+							<p>No.{{item.flowOrderNum}}</p>
+							<p>车牌号：{{item.carrierCarnum}}</p>
+							<p>司机名称：{{item.shipMentCarrierName}}</p>
+							<!--<p>公司</p>-->
+							<p>发货时间：{{item.sendTime | formatDate}}</p>
+							<p>交货时间：{{item.arriveTime | formatDate}}</p>
+							<router-link :to="'/prc/routes/'+item.flowOrderNum">查看车辆行使轨迹<i
+									class="el-icon-d-arrow-right"></i></router-link>
+						</td>
+						<td>
+							<p>No.{{item.flowOrderNum}}</p>
+							<p>{{item.substationName}}</p>
+							<router-link :to="'/prc/tradepic/'+item.flowOrderNum">查看现场交易图片<i
+									class="el-icon-d-arrow-right"></i></router-link>
+						</td>
+						<td>
+							<p>No.{{item.arteryOrderNum}}</p>
+							<p>车牌号：{{item.otcarNum}}</p>
+							<p>司机名称：{{item.carrierName}}</p>
+							<p>公司：{{item.carCompany}}</p>
+							<p>发货时间：{{item.sendTransportTime | formatDate}}</p>
+							<p>交货时间：{{item.transportArriveTime | formatDate}}</p>
+							<p>{{item.houseName}}-{{item.substationName}}</p>
+							<!--<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>-->
+						</td>
+						<td>
+							<p>No.{{item.arteryOrderNum}}</p>
+							<p>{{item.houseName}}-{{item.substationName}}</p>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 
-			<div class="showmore">
-				<a href="javascript:;" @click="showMore" :class="{active: showall}">点击加载更多 <i
-						class="el-icon-arrow-down"></i></a>
+
+				<div v-if="data.length >= 2" class="showmore">
+					<a href="javascript:;" @click="showMore" :class="{active: showall}">点击加载更多 <i class="el-icon-arrow-down"></i></a>
+				</div>
 			</div>
+			<div v-else class="v-nomore">暂无数据...</div>
 		</div>
 	</div>
 </template>
 <script>
 	import axios from 'axios'
+	import formatDate from '../../assets/js/formatDate'
 
 	export default {
+		props: {
+			searchData: Object
+		},
 		data() {
 			return {
 				data: [],
@@ -145,21 +155,33 @@
 				showall: false
 			}
 		},
+		created (){
+
+		},
+		filters: {
+			formatDate(time){
+				var date = new Date(time);
+				return formatDate(date, 'yyyy-MM-dd hh:mm')
+			}
+		},
 		methods: {
 			//获取列表信息
 			_getLists() {
-				axios.get('/userfactory/usertofactorys').then((data) => {
+				let data = this.searchData
+				console.log(data);
+				axios.post('/userfactory/usertofactorys', data).then((data) => {
 					//调试先反转一下
 					this.data = data.data.messageList.reverse()
+					console.log(data.data);
 				}).catch((e) => {
 					console.log(e);
 				})
 			},
 			//查看回收品分类
-			_getRecycleDetail(orderNum){
+			_getRecycleDetail(orderNum) {
 				axios.get('/userfactory/recycledetail?orderNum=' + orderNum).then((data) => {
 					let res = data.data.recycleList
-					if(res.length == 0) res = [{recycleTypeTitle: ' ', weight: '-', totalPrice: '-'}]
+					if (res.length == 0) res = [{recycleTypeTitle: ' ', weight: '-', totalPrice: '-'}]
 					this.classIfyData = res
 				}).catch((e) => {
 					console.log(e);
@@ -201,6 +223,8 @@
 			this._getLists()
 			//调用动画
 			this.animated()
+
+			console.log(this.searchData);
 		}
 	}
 </script>
@@ -290,15 +314,15 @@
 							overflow-y: auto;
 							background: url(../../assets/img/more-bg.png) repeat-y;
 							background-size: 100% 100%;
-							div{
+							div {
 								padding: 10px 0;
-								span{
+								span {
 									font-size: 12px;
 								}
 							}
 						}
 
-						&:hover{
+						&:hover {
 							.v-more-lists {
 								display: block;
 							}
@@ -332,6 +356,12 @@
 			a.active {
 				color: #ffab19;
 			}
+		}
+
+		.v-nomore{
+			color: #fff;
+			font-size: 14px;
+			padding: 10px;
 		}
 	}
 

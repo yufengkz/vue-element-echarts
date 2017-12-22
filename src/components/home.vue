@@ -9,7 +9,7 @@
 		name: 'home',
 		data() {
 			return {
-				msg: '欢迎来到桑德薪环卫'
+				msg: '欢迎来到桑德新环卫'
 			}
 		}
 	}

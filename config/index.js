@@ -19,7 +19,7 @@ module.exports = {
 		    target:'http://192.168.89.1:8080/sound-recycle-count'
 	    },
 	    '/userfactory/*':{
-		    target:'http://192.168.89.15:8080/sound-recycle-count'
+		    target:'http://192.168.89.1:8080/sound-recycle-count'
 	    },
     },
 
