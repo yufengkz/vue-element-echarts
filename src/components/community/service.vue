@@ -9,9 +9,9 @@
 			</el-breadcrumb>
 			<!--search-->
 			<el-form :inline="true" :model="searchData" class="demo-form-inline">
-			<span class=v-stre>
-				<i class="el-icon-location"></i>
-			</span>
+				<span class=v-stre>
+					<i class="el-icon-location"></i>
+				</span>
 				<el-form-item label="所属城市：">
 					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
 						<el-option label="蚌埠市" value="445"></el-option>
@@ -252,6 +252,7 @@
 					if(res.code != 0) return alert(res.msg)
 					//区列表
 					this.countyLists = res.data.country
+					this.$store.commit('set', res.data.country)
 //					console.log(res.data);
 					//总数据量
 					this.serviceData = {
@@ -298,8 +299,8 @@
 					let res = data.data
 					if(res.code != 0) return alert(res.msg)
 					//打包站的区列表  蚌埠市的区域列表应该都是一样的
-					//this.countyLists = res.data.country
-					console.log(res.data)
+					this.countyLists = res.data.country
+					this.$store.commit('set', res.data.country)
 
 					//总数据量
 					this.packData = {

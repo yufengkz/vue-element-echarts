@@ -1,330 +1,340 @@
 <!-- 柱状图 -->
 <template>
-	<div class="heat">
-		<div class="main"></div>
+	<div class="columnChart">
+		<!--搜索组件-->
+		<div class="v-search">
+			<!--面包屑-->
+			<el-breadcrumb separator-class="el-icon-arrow-right">
+				<span class=v-location><i class=el-icon-caret-right></i>当前位置：</span>
+				<a class="v-bread" href="javascript:;">报表统计</a>
+			</el-breadcrumb>
+			<!--search-->
+			<el-form :inline="true" :model="searchData" class="demo-form-inline">
+				<span class=v-stre>
+					<i class="el-icon-location"></i>
+				</span>
+				<el-form-item label="所属城市：">
+					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
+						<el-option label="蚌埠市" value="445"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="所属地区：">
+					<el-select v-model="searchData.countyId" placeholder="请选择" :style="{'width': '140px'}">
+						<el-option label="请选择" value="0"></el-option>
+						<el-option
+								v-for="(item, index) in countyLists"
+								:key="item.index"
+								:label="item.name"
+								:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="时间段：">
+					<el-date-picker
+							v-model="searchData.startDate"
+							type="date"
+							placeholder="开始日期">
+					</el-date-picker>
+				</el-form-item>
+				<span>——&nbsp;&nbsp;</span>
+				<el-form-item label="">
+					<el-date-picker
+							v-model="searchData.endDate"
+							type="date"
+							placeholder="结束日期">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="sd-yellow" @click="onSubmit">确定</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
+		<!--图表-->
+		<el-row>
+			<el-col :span="12">
+				<div class="grid-content bg-purple">
+					<!--柱状图-->
+					<column ref="initColumn" :columnData="columnData"></column>
+				</div>
+			</el-col>
+			<el-col :span="12" :style="{'margin-left': '20px'}">
+				<div class="grid-content bg-purple-light">
+					<!--折线图-->
+					<multipleColumn ref="initMultipleColumn" :multipleColumnData="multipleColumnData"></multipleColumn>
+				</div>
+			</el-col>
+			<el-col :span="12">
+				<div class="list_bd">
+					<!--list-->
+					<lists :weightUser="weightUser"></lists>
+				</div>
+			</el-col>
+			<el-col :span="12" :style="{'margin-left': '20px'}">
+				<div class="list_bd">
+					<!--list-->
+					<userCountLists :userNumList="userNumList"></userCountLists>
+				</div>
+			</el-col>
+		</el-row>
+
 	</div>
+
 </template>
 
 <script>
-	import echarts from 'echarts'
 	import axios from 'axios'
+	import SearchSlide from '../search/search'
+	import column from '../column/column'
+	import multipleColumn from '../multipleColumn/multipleColumn'
+	import lists from './lists'
+	import userCountLists from './userCountLists'
 
 	export default {
 		created() {
-			this._getCityData()
-			this._setOption()
+			//console.log(this.$store.state.color)
 		},
 		data() {
 			return {
-				legendArr: [],
-				color: 'red',
-				myChart: {},
-				geoCoordMap: {},
-				name: '柱状图',
-				option: {}
+				searchData: {
+					cityId: 103,
+					countyName: '',
+					countyId: 1042,
+					startDate: '2017-11-25',
+					endDate: ''
+				},
+				pickerOptions1: {
+					disabledDate(time) {
+						return time.getTime() > Date.now();
+					}
+				},
+				countyLists: this.$store.state.countyLists,
+				columnData: {}, //柱状图数据
+				multipleColumnData: [], //折线图数据
+				weightUser: [], //回收交运量
+				userNumList: [], //用户量
 			}
 		},
 		methods: {
-			convertData(data) {
-				var res = [];
-				for (var i = 0; i < data.length; i++) {
-					var geoCoord = this.geoCoordMap[data[i].name];
-					if (geoCoord) {
-						res.push(geoCoord.concat(data[i].value));
+			getLists() {
+				console.log(this.searchData.startDate);
+				var params = new URLSearchParams()
+				params.append('cityId', this.searchData.cityId)
+				params.append('countyId', this.searchData.countyId)
+				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
+				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
+				axios.post('/sumpackage/sumpackageranking', params).then((data) => {
+					//调试先反转一下
+					if(data.data.code == 0){
+						let res = data.data.data
+						console.log(res);
+						//柱状图
+						this.columnData = {
+							huishou: res.fwtdayhuishou,
+							fahuo: res.fwtdayfahuo
+						}
+						//折线图数据
+						this.multipleColumnData = res.userList
+						//列表
+						//weightUser
+						this.weightUser = res.weightUser
+
+						//用户量
+						this.userNumList = res.userNumList
 					}
-				}
-				return res;
-			},
-			_getCityData() {
-				axios.get('static/data/cityData.json').then((res) => {
-					this.geoCoordMap = res.data
+
+				}).then(() => {
+					//柱状图
+					if(this.columnData) this.$refs.initColumn.initColumn()
+					//散点图
+					if(this.multipleColumnData) this.$refs.initMultipleColumn.initColumn()
+
+				}).catch((e) => {
+					console.log(e);
 				})
 			},
-			_setOption() {
-				this.option = {
-					backgroundColor: '#404a59',
-					title: {
-						text: '全国主要城市空气质量',
-						subtext: 'data from PM25.in',
-						sublink: 'http://www.pm25.in',
-						left: 'center',
-						textStyle: {
-							color: '#fff'
-						}
-					},
-					tooltip: {
-						trigger: 'item'
-					},
-					legend: {
-						orient: 'vertical',
-						top: 'bottom',
-						left: 'right',
-						data: ['pm2.5'],
-						textStyle: {
-							color: '#fff'
-						}
-					},
-					visualMap: {
-						min: 0,
-						max: 300,
-						splitNumber: 5,
-						color: ['#d94e5d', '#eac736', '#50a3ba'],
-						textStyle: {
-							color: '#fff'
-						}
-					},
-					geo: {
-						map: 'china',
-						label: {
-							emphasis: {
-								show: false
-							}
-						},
-						itemStyle: {
-							normal: {
-								areaColor: '#323c48',
-								borderColor: '#111'
-							},
-							emphasis: {
-								areaColor: '#2a333d'
-							}
-						}
-					},
-					series: [
-						{
-							name: 'pm2.5',
-							type: 'scatter',
-							coordinateSystem: 'geo',
-							data: this.convertData([
-								{name: "海门", value: 9},
-								{name: "鄂尔多斯", value: 12},
-								{name: "招远", value: 12},
-								{name: "舟山", value: 12},
-								{name: "齐齐哈尔", value: 14},
-								{name: "盐城", value: 15},
-								{name: "赤峰", value: 16},
-								{name: "青岛", value: 18},
-								{name: "乳山", value: 18},
-								{name: "金昌", value: 19},
-								{name: "泉州", value: 21},
-								{name: "莱西", value: 21},
-								{name: "日照", value: 21},
-								{name: "胶南", value: 22},
-								{name: "南通", value: 23},
-								{name: "拉萨", value: 24},
-								{name: "云浮", value: 24},
-								{name: "梅州", value: 25},
-								{name: "文登", value: 25},
-								{name: "上海", value: 25},
-								{name: "攀枝花", value: 25},
-								{name: "威海", value: 25},
-								{name: "承德", value: 25},
-								{name: "厦门", value: 26},
-								{name: "汕尾", value: 26},
-								{name: "潮州", value: 26},
-								{name: "丹东", value: 27},
-								{name: "太仓", value: 27},
-								{name: "曲靖", value: 27},
-								{name: "烟台", value: 28},
-								{name: "福州", value: 29},
-								{name: "瓦房店", value: 30},
-								{name: "即墨", value: 30},
-								{name: "抚顺", value: 31},
-								{name: "玉溪", value: 31},
-								{name: "张家口", value: 31},
-								{name: "阳泉", value: 31},
-								{name: "莱州", value: 32},
-								{name: "湖州", value: 32},
-								{name: "汕头", value: 32},
-								{name: "昆山", value: 33},
-								{name: "宁波", value: 33},
-								{name: "湛江", value: 33},
-								{name: "揭阳", value: 34},
-								{name: "荣成", value: 34},
-								{name: "连云港", value: 35},
-								{name: "葫芦岛", value: 35},
-								{name: "常熟", value: 36},
-								{name: "东莞", value: 36},
-								{name: "河源", value: 36},
-								{name: "淮安", value: 36},
-								{name: "泰州", value: 36},
-								{name: "南宁", value: 37},
-								{name: "营口", value: 37},
-								{name: "惠州", value: 37},
-								{name: "江阴", value: 37},
-								{name: "蓬莱", value: 37},
-								{name: "韶关", value: 38},
-								{name: "嘉峪关", value: 38},
-								{name: "广州", value: 38},
-								{name: "延安", value: 38},
-								{name: "太原", value: 39},
-								{name: "清远", value: 39},
-								{name: "中山", value: 39},
-								{name: "昆明", value: 39},
-								{name: "寿光", value: 40},
-								{name: "盘锦", value: 40},
-								{name: "长治", value: 41},
-								{name: "深圳", value: 41},
-								{name: "珠海", value: 42},
-								{name: "宿迁", value: 43},
-								{name: "咸阳", value: 43},
-								{name: "铜川", value: 44},
-								{name: "平度", value: 44},
-								{name: "佛山", value: 44},
-								{name: "海口", value: 44},
-								{name: "江门", value: 45},
-								{name: "章丘", value: 45},
-								{name: "肇庆", value: 46},
-								{name: "大连", value: 47},
-								{name: "临汾", value: 47},
-								{name: "吴江", value: 47},
-								{name: "石嘴山", value: 49},
-								{name: "沈阳", value: 50},
-								{name: "苏州", value: 50},
-								{name: "茂名", value: 50},
-								{name: "嘉兴", value: 51},
-								{name: "长春", value: 51},
-								{name: "胶州", value: 52},
-								{name: "银川", value: 52},
-								{name: "张家港", value: 52},
-								{name: "三门峡", value: 53},
-								{name: "锦州", value: 54},
-								{name: "南昌", value: 54},
-								{name: "柳州", value: 54},
-								{name: "三亚", value: 54},
-								{name: "自贡", value: 56},
-								{name: "吉林", value: 56},
-								{name: "阳江", value: 57},
-								{name: "泸州", value: 57},
-								{name: "西宁", value: 57},
-								{name: "宜宾", value: 58},
-								{name: "呼和浩特", value: 58},
-								{name: "成都", value: 58},
-								{name: "大同", value: 58},
-								{name: "镇江", value: 59},
-								{name: "桂林", value: 59},
-								{name: "张家界", value: 59},
-								{name: "宜兴", value: 59},
-								{name: "北海", value: 60},
-								{name: "西安", value: 61},
-								{name: "金坛", value: 62},
-								{name: "东营", value: 62},
-								{name: "牡丹江", value: 63},
-								{name: "遵义", value: 63},
-								{name: "绍兴", value: 63},
-								{name: "扬州", value: 64},
-								{name: "常州", value: 64},
-								{name: "潍坊", value: 65},
-								{name: "重庆", value: 66},
-								{name: "台州", value: 67},
-								{name: "南京", value: 67},
-								{name: "滨州", value: 70},
-								{name: "贵阳", value: 71},
-								{name: "无锡", value: 71},
-								{name: "本溪", value: 71},
-								{name: "克拉玛依", value: 72},
-								{name: "渭南", value: 72},
-								{name: "马鞍山", value: 72},
-								{name: "宝鸡", value: 72},
-								{name: "焦作", value: 75},
-								{name: "句容", value: 75},
-								{name: "北京", value: 79},
-								{name: "徐州", value: 79},
-								{name: "衡水", value: 80},
-								{name: "包头", value: 80},
-								{name: "绵阳", value: 80},
-								{name: "乌鲁木齐", value: 84},
-								{name: "枣庄", value: 84},
-								{name: "杭州", value: 84},
-								{name: "淄博", value: 85},
-								{name: "鞍山", value: 86},
-								{name: "溧阳", value: 86},
-								{name: "库尔勒", value: 86},
-								{name: "安阳", value: 90},
-								{name: "开封", value: 90},
-								{name: "济南", value: 92},
-								{name: "德阳", value: 93},
-								{name: "温州", value: 95},
-								{name: "九江", value: 96},
-								{name: "邯郸", value: 98},
-								{name: "临安", value: 99},
-								{name: "兰州", value: 99},
-								{name: "沧州", value: 100},
-								{name: "临沂", value: 103},
-								{name: "南充", value: 104},
-								{name: "天津", value: 105},
-								{name: "富阳", value: 106},
-								{name: "泰安", value: 112},
-								{name: "诸暨", value: 112},
-								{name: "郑州", value: 113},
-								{name: "哈尔滨", value: 114},
-								{name: "聊城", value: 116},
-								{name: "芜湖", value: 117},
-								{name: "唐山", value: 119},
-								{name: "平顶山", value: 119},
-								{name: "邢台", value: 119},
-								{name: "德州", value: 120},
-								{name: "济宁", value: 120},
-								{name: "荆州", value: 127},
-								{name: "宜昌", value: 130},
-								{name: "义乌", value: 132},
-								{name: "丽水", value: 133},
-								{name: "洛阳", value: 134},
-								{name: "秦皇岛", value: 136},
-								{name: "株洲", value: 143},
-								{name: "石家庄", value: 147},
-								{name: "莱芜", value: 148},
-								{name: "常德", value: 152},
-								{name: "保定", value: 153},
-								{name: "湘潭", value: 154},
-								{name: "金华", value: 157},
-								{name: "岳阳", value: 169},
-								{name: "长沙", value: 175},
-								{name: "衢州", value: 177},
-								{name: "廊坊", value: 193},
-								{name: "菏泽", value: 194},
-								{name: "合肥", value: 229},
-								{name: "武汉", value: 273},
-								{name: "大庆", value: 279}
-							]),
-							symbolSize: 1,
-							label: {
-								normal: {
-									show: false
-								},
-								emphasis: {
-									show: false
-								}
-							},
-							itemStyle: {
-								emphasis: {
-									borderColor: '#fff',
-									borderWidth: 1
-								}
-							}
-						}
-					]
-				}
+			onSubmit() {
+				console.log('search:');
+				console.log(this.searchData);
+				this.getLists()
 			}
 		},
-		components: {},
 		mounted() {
-			// 基于准备好的dom，初始化echarts实例
-			this.myChart = echarts.init(document.querySelector('.heat .main'));
-			this.myChart.setOption(this.option)
+			this.getLists()
+			//console.log(this.$store.state.countyLists);
+
+		},
+		components: {
+			SearchSlide,
+			column, //柱状图
+			multipleColumn, //折线图
+			lists, //lists
+			userCountLists //用户量
 		}
+
 	}
 </script>
 
-<style scoped lang="less">
-	body, html {
-		height: 100%;
+<style lang="less">
+	.el-row {
+		margin-top: 20px;
 	}
 
-	.heat {
-		height: 800px;
-		.main {
-			height: 800px;
+	.el-col-12 {
+		width: 49.1%;
+	}
+	.list_bd{
+		border: 1px solid #385585;
+		margin-top: 20px;
+		padding-top: 15px;
+		background: #051030;
+	}
+
+	/*search*/
+	.v-search {
+		height: 128px;
+		background: url('../../assets/img/searchslide-bg.png');
+		background-size: 100% 100%;
+		color: #fff;
+		padding: 0 20px;
+
+		.el-breadcrumb {
+			height: 60px;
+			line-height: 60px;
+
+			.v-location {
+				float: left;
+				font-size: 16px;
+				.el-icon-caret-right {
+					color: #28b51f;
+					font-size: 20px;
+				}
+			}
+
+			.v-bread {
+				font-size: 16px;
+				font-weight: normal !important;
+				color: #00ffd6 !important;
+			}
+			a.v-bread:last-child {
+				color: #fff !important;
+			}
+		}
+
+	}
+
+	.el-form {
+		margin-top: 10px;
+	}
+
+	.v-stre {
+		line-height: 40px;
+		.el-icon-location {
+			color: #ffab19;
 		}
 	}
+
+	.el-form-item__label {
+		color: #fff !important;
+	}
+
+	//面包屑
+	.el-breadcrumb__inner, .el-breadcrumb__inner a {
+		font-weight: normal;
+		-webkit-transition: color .2s cubic-bezier(.645, .045, .355, 1);
+		transition: color .2s cubic-bezier(.645, .045, .355, 1);
+		color: #00ffd6;
+	}
+
+	//日历
+	.el-date-picker {
+		background: url(../../assets/img/data-picker-bg.png) no-repeat;
+		background-size: 100% 100%;
+		border: transparent;
+	}
+
+	.el-picker-panel__icon-btn, .el-date-picker__header-label {
+		color: #fff;
+	}
+
+	.el-date-table td.next-month, .el-date-table td.prev-month {
+		//color: #666;
+	}
+
+	.el-date-table td.current:not(.disabled) span {
+		background: #ffab19;
+	}
+
+	.el-date-table td.available:hover {
+		color: #fff;
+	}
+
+	.el-date-table td.today span {
+		color: #fff;
+	}
+
+	.el-icon-date {
+		font-size: 20px;
+		color: #ffab19;
+	}
+
+	.el-input__inner {
+		background: transparent;
+		border: 1px solid #999;
+		color: #fff;
+	}
+
+	//picker宽度
+	.el-date-editor.el-input, .el-date-editor.el-input__inner, .el-input .el-input__inner {
+		width: 140px;
+	}
+
+	.el-icon-arrow-up:before {
+		color: #ffab19;
+	}
+
+	//弹出框箭头
+	.el-popper .popper__arrow {
+		display: none;
+	}
+
+	//下拉框
+	.el-select-dropdown__list {
+		background: url(../../assets/img/select-bg.png) repeat-y;
+		background-size: 100% 100%;
+	}
+
+	.el-select-dropdown__item.selected {
+		color: #ffab19;
+	}
+
+	.el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+		background: url(../../assets/img/select-hover-bg.png) repeat-x;
+		background-size: 100% 100%;
+		color: #ffab19;
+	}
+
+	.el-select-dropdown {
+		box-shadow: none;
+		background-color: transparent;
+		border: 1px solid transparent;
+	}
+
+	.el-select-dropdown__item {
+		color: #fff;
+	}
+
+	//按钮颜色
+	.el-button--sd-yellow {
+		width: 100px;
+		background: #ffab19;
+		color: #fff;
+		border: 1px solid #ffab19;
+	}
+
+	.el-button:focus, .el-button:hover {
+		background: #ffab19;
+		color: #fff;
+		border: 1px solid #ffab19;
+	}
+
 </style>

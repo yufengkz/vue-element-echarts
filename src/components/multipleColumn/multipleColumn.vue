@@ -7,6 +7,9 @@
 <script>
 	import echarts from 'echarts'
 	export default {
+		props: {
+			multipleColumnData: Array
+		},
 		data() {
 			return {
 				legendArr: [],
@@ -17,103 +20,113 @@
 			}
 		},
 		methods: {
+			//初始化散点图  基于准备好的dom，初始化echarts实例
+			initColumn(){
+				this.timeData = []
+				//格式数据
+				this.userCount = []
+				this.multipleColumnData.forEach((item, index) => {
+					this.timeData.push(item.dates)
+					this.userCount.push(item.userCount)
+				})
+				//echarts
+				this.myChart = echarts.init(document.querySelector('.multipleColumn'));
+				let option = {
+					title: {
+						text: "服务亭量",
+						textStyle: {
+							color: '#fff', //图表基本样式设置 color,fontStyle,fontWeight,textShadowOffsetX...(http://echarts.baidu.com/option.html#title)
+							fontSize: '20px'
+						},
+						x: "10px", //标题偏移量
+						y: "10px"
+					},
+					tooltip: {
+						trigger: "item",
+						formatter: "{a} <br/>{b} : {c}"
+					},
+					legend: {
+						x: 'left',
+						textStyle: {
+							color: '#fff', //设置柱状图代表什么
+						},
+						data: ['', ''] //显示上标识
+					},
+					xAxis: [
+						{
+							type: "category",
+							name: " ",
+							//splitLine: {show: false},//去除网格线
+							splitArea : {show : false},//去除网格区域
+							axisLabel: {
+								textStyle: {
+									color: '#fff'  //坐标刻度文字颜色
+								}
+							},
+							data: this.timeData//['12/05', '12/06','12/07', '12/08','12/09', '12/10', '12/12'], //长度 7
+						}
+					],
+					yAxis: [
+						{
+							type: "log",
+							name: " ",
+							//splitLine: {show: true},//去除网格线
+							//splitArea : {show : false},//去除网格区域
+							splitLine: {
+								lineStyle: {
+									color: ['rgba(230, 230, 230, 0.2)']  //横线颜色
+								}
+							},
+							axisLabel: {
+								textStyle: {
+									color: '#fff'  //坐标刻度文字颜色
+								}
+							},
+						}
+					],
+					toolbox: {
+						show: false,  //是否显示下载 刷新按钮
+						feature: {
+							mark: {
+								show: true
+							},
+							dataView: {
+								show: true,
+								readOnly: true
+							},
+							restore: {
+								show: true
+							},
+							saveAsImage: {
+								show: false
+							}
+						}
+					},
+					color: ['#00ffde'], //折线、点颜色
+					calculable: true,
+					series: [
+						{
+							name: "用户量",
+							type: "line",
+							data: this.userCount,//[2, 2223, 81, 247, 741, 1000, 6669], //长度7
+							itemStyle : { normal: {label : {show: true}}}
+						}
+					],
+					//控制边距　
+					grid: {
+						left: '8%',
+						//right:'1%',
+						//top: '0%',
+						bottom: '6%',
+						containLabel: true,
+					}
+				};
 
+				this.myChart.setOption(option);
+			}
 		},
 		mounted() {
-			// 基于准备好的dom，初始化echarts实例
-			this.myChart = echarts.init(document.querySelector('.multipleColumn'));
-			let option = {
-				title: {
-					text: "每日用户量（12月）",
-					textStyle: {
-						color: '#fff', //图表基本样式设置 color,fontStyle,fontWeight,textShadowOffsetX...(http://echarts.baidu.com/option.html#title)
-						fontSize: '20px'
-					},
-					x: "10px", //标题偏移量
-					y: "10px"
-				},
-				tooltip: {
-					trigger: "item",
-					formatter: "{a} <br/>{b} : {c}"
-				},
-				legend: {
-					x: 'left',
-					textStyle: {
-						color: '#fff', //设置柱状图代表什么
-					},
-					data: ['', ''] //显示上标识
-				},
-				xAxis: [
-					{
-						type: "category",
-						name: " ",
-						//splitLine: {show: false},//去除网格线
-						splitArea : {show : false},//去除网格区域
-						axisLabel: {
-							textStyle: {
-								color: '#fff'  //坐标刻度文字颜色
-							}
-						},
-						data: ['12/05', '12/06','12/07', '12/08','12/09', '12/10', '12/12'], //长度 7
-					}
-				],
-				yAxis: [
-					{
-						type: "log",
-						name: " ",
-						//splitLine: {show: true},//去除网格线
-						//splitArea : {show : false},//去除网格区域
-						splitLine: {
-							lineStyle: {
-								color: ['rgba(230, 230, 230, 0.2)']  //横线颜色
-							}
-						},
-						axisLabel: {
-							textStyle: {
-								color: '#fff'  //坐标刻度文字颜色
-							}
-						},
-					}
-				],
-				toolbox: {
-					show: false,  //是否显示下载 刷新按钮
-					feature: {
-						mark: {
-							show: true
-						},
-						dataView: {
-							show: true,
-							readOnly: true
-						},
-						restore: {
-							show: true
-						},
-						saveAsImage: {
-							show: false
-						}
-					}
-				},
-				color: ['#00ffde'], //折线、点颜色
-				calculable: true,
-				series: [
-					{
-						name: "用户量",
-						type: "line",
-						data: [2, 2223, 81, 247, 741, 1000, 6669], //长度7
-						itemStyle : { normal: {label : {show: true}}}
-					}
-				],
-				//控制边距　
-				grid: {
-					left: '8%',
-					//right:'1%',
-					//top: '0%',
-					bottom: '6%',
-					containLabel: true,
-				}
-			};
-
-			this.myChart.setOption(option);
+			this.initColumn()
 			/*this.myChart.setOption({
 				//全局文本样式
 				textStyle: {

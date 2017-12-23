@@ -1,20 +1,21 @@
 <template>
 	<el-table
-			:data="tableData"
+			:data="weightUser"
 			style="width: 100%">
 		<el-table-column
-				prop="address"
-				label="服务亭名称"
+				prop="nickname"
+				id="id"
+				label="服务亭/打包站名称"
 				align="center">
 		</el-table-column>
 		<el-table-column
-				prop="name"
+				prop="net_weight"
 				label="回收量"
 				width="140"
 				align="center">
 		</el-table-column>
 		<el-table-column
-				prop="name"
+				prop="delivery_weight"
 				label="交运量"
 				width="140"
 				align="center">
@@ -24,6 +25,9 @@
 
 <script>
 	export default {
+		props: {
+			weightUser: Array
+		},
 		data() {
 			return {
 				tableData: [{

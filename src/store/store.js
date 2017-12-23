@@ -9,7 +9,13 @@ const debug = true //process.env.NODE_ENV //!== 'production'
 const store = new Vuex.Store({
 	state: {
 		count: 0,
-		color: ['#00c6d7', '#0b7bdc']
+		color: ['#00c6d7', '#0b7bdc'],
+		countyLists: []
+	},
+	mutations: {
+		set(state, data){
+			state.countyLists = data
+		}
 	},
 	strict: debug,
 	plugins: debug ? [createLogger()] : []

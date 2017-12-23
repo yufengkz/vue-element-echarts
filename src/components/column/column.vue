@@ -7,123 +7,147 @@
 <script>
 	import echarts from 'echarts'
 	export default {
+		props: {
+			columnData: Object
+		},
 		data() {
 			return {
 				legendArr: [],
 				color: this.$store.state.color,
 				myChart: {},
-				name: '柱状图'
+				name: '柱状图',
+				timeData: [],
+				hsData: [],
+				fhData: [],
+			}
+		},
+		methods: {
+			initColumn(){
+				this.timeData = []
+				this.hsData = []
+				//格式化数据
+				console.log('sadasdsadasdsa');
+				console.log(this.columnData);
+				this.columnData.huishou.forEach((item, index) => {
+					this.timeData.push(item.ctimes)
+					this.hsData.push(item.net_weight)
+				})
+				this.columnData.fahuo.forEach((item, index) => {
+					//this.timeData.push(item.dates)
+					this.fhData.push(item.net_weight)
+				})
+				// 基于准备好的dom，初始化echarts实例
+				let option = {
+					title: {
+						show: false
+					},
+					title: {
+						text: "回收／交运量",
+						textStyle: {
+							color: '#fff', //图表基本样式设置 color,fontStyle,fontWeight,textShadowOffsetX...(http://echarts.baidu.com/option.html#title)
+							fontSize: '20px',
+						},
+						x: "10px",
+						y: "10px"
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					toolbox: {
+						show: false
+					},
+					color: this.color,
+					legend: {
+						//show: true,
+						orient: 'horizontal',
+						itemWidth: 15,
+						itemHeight: 10,
+						x: 'right',
+						y: 12,
+						textStyle: {
+							color: '#fff', //设置柱状图代表什么
+						},
+						data: ['回收量', '交运量'], //,'平均温度'
+						selected: {
+							'回收量': true,
+							'交运量': true,
+						}
+					},
+					calculable: true,
+					xAxis: [{
+						name: ' ',
+						type: 'category',
+						axisLine: {
+							show: false
+						},
+						axisTick: {
+							show: false
+						},
+						nameTextStyle: {
+							color: 'rgba(255, 255, 255, 0.69)'
+						},
+						axisLabel: {
+							textStyle: {
+								color: 'white'
+							}
+						},
+						data: this.timeData,//['12/05', '12/06','12/07', '12/08','12/09', '12/10', '12/11']
+					}],
+					yAxis: [{
+						axisLine: {
+							show: false
+						},
+						nameLocation: 'end',
+						nameGap: 20,
+						nameRotate: 0,
+						axisTick: {
+							show: false
+						},
+						splitLine: {
+							lineStyle: {
+								color: ['rgba(230, 230, 230, 0.2)']  //横线颜色
+							}
+						},
+						axisLabel: {
+							formatter: '{value} kg',  //单位
+							textStyle: {
+								color: 'white',
+								fontSize: 14
+							}
+						},
+						name: ' ',
+						type: 'value',
+						nameTextStyle: {
+							color: 'rgba(255, 255, 255, 0.69)'
+						}
+					}],
+					series: [{
+						name: '回收量',
+						type: 'bar',
+						data: this.hsData,//[200, 120, 20, 500,60, 70, 300],
+						barWidth: 10,
+						barGap: 0
+					},{
+						name: '交运量',
+						type: 'bar',
+						data: this.fhData,//[400, 59, 50, 8, 6, 12, 160],
+						barWidth: 10,
+						barGap: 0
+					}],
+					//控制边距　
+					grid: {
+						left: '8%',
+						//right:'1%',
+						//top: '0%',
+						bottom: '6%',
+						containLabel: true,
+					}
+				}
+				this.myChart.setOption(option, true)
 			}
 		},
 		mounted() {
-			// 基于准备好的dom，初始化echarts实例
 			this.myChart = echarts.init(document.querySelector('.columnChart .column'));
-			this.myChart.setOption({
-				title: {
-					show: false
-				},
-				title: {
-					text: "回收／交运量（12月）",
-					textStyle: {
-						color: '#fff', //图表基本样式设置 color,fontStyle,fontWeight,textShadowOffsetX...(http://echarts.baidu.com/option.html#title)
-						fontSize: '20px',
-					},
-					x: "10px",
-					y: "10px"
-				},
-				tooltip: {
-					trigger: 'axis'
-				},
-				toolbox: {
-					show: false
-				},
-				color: this.color,
-				legend: {
-					//show: true,
-					orient: 'horizontal',
-					itemWidth: 15,
-					itemHeight: 10,
-					x: 'right',
-					y: 12,
-					textStyle: {
-						color: '#fff', //设置柱状图代表什么
-					},
-					data: ['回收量', '交运量'], //,'平均温度'
-					selected: {
-						'回收量': true,
-						'交运量': true,
-					}
-				},
-				calculable: true,
-				xAxis: [{
-					name: ' ',
-					type: 'category',
-					axisLine: {
-						show: false
-					},
-					axisTick: {
-						show: false
-					},
-					nameTextStyle: {
-						color: 'rgba(255, 255, 255, 0.69)'
-					},
-					axisLabel: {
-						textStyle: {
-							color: 'white'
-						}
-					},
-					data: ['12/05', '12/06','12/07', '12/08','12/09', '12/10', '12/11']
-				}],
-				yAxis: [{
-					axisLine: {
-						show: false
-					},
-					nameLocation: 'end',
-					nameGap: 20,
-					nameRotate: 0,
-					axisTick: {
-						show: false
-					},
-					splitLine: {
-						lineStyle: {
-							color: ['rgba(230, 230, 230, 0.2)']  //横线颜色
-						}
-					},
-					axisLabel: {
-						formatter: '{value} kg',  //单位
-						textStyle: {
-							color: 'white',
-							fontSize: 14
-						}
-					},
-					name: ' ',
-					type: 'value',
-					nameTextStyle: {
-						color: 'rgba(255, 255, 255, 0.69)'
-					}
-				}],
-				series: [{
-					name: '回收量',
-					type: 'bar',
-					data: [200, 120, 20, 500,60, 70, 300],
-					barWidth: 10,
-					barGap: 0
-				},{
-					name: '交运量',
-					type: 'bar',
-					data: [400, 59, 50, 8, 6, 12, 160],
-					barWidth: 10,
-					barGap: 0
-				}],
-				//控制边距　
-				grid: {
-					left: '8%',
-					//right:'1%',
-					//top: '0%',
-					bottom: '6%',
-					containLabel: true,
-				}
-			});
 			/*this.myChart.setOption({
 				//全局文本样式
 				textStyle: {

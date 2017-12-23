@@ -171,7 +171,7 @@
 				console.log(data);
 				axios.post('/userfactory/usertofactorys', data).then((data) => {
 					//调试先反转一下
-					this.data = data.data.messageList.reverse()
+					this.data = data.data.userList
 					console.log(data.data);
 				}).catch((e) => {
 					console.log(e);
@@ -223,8 +223,6 @@
 			this._getLists()
 			//调用动画
 			this.animated()
-
-			console.log(this.searchData);
 		}
 	}
 </script>
