@@ -6,7 +6,7 @@
 			<!--面包屑-->
 			<el-breadcrumb separator-class="el-icon-arrow-right">
 				<span class=v-location><i class=el-icon-caret-right></i>当前位置：</span>
-				<a class="v-bread" href="javascript:;">报表统计</a>
+				<a class="v-bread" href="javascript:;">溯源展示</a>
 			</el-breadcrumb>
 			<!--search-->
 			<el-form :inline="true" :model="searchData" class="demo-form-inline">
@@ -29,10 +29,10 @@
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="订单号：">
-					<el-input v-model="searchData.orderNum"></el-input>
+					<el-input v-model="searchData.orderNum" placeholder="请输入订单号"></el-input>
 				</el-form-item>
 				<el-form-item label="手机号：">
-					<el-input v-model="searchData.mobile"></el-input>
+					<el-input v-model="searchData.mobile" placeholder="请输入手机号"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="sd-yellow" @click="onSubmit">确定</el-button>

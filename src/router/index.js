@@ -45,7 +45,7 @@ export default new Router({
 			component: TradePic
 		},
 		{
-			path: '/prc/routes/:id', //地图线路规划
+			path: '/prc/routes/:type/:id', //地图线路规划
 			name: 'RoutesLine',
 			component: RoutesLine
 		},

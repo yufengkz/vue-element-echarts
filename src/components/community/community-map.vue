@@ -6,7 +6,8 @@
 			<!--面包屑-->
 			<el-breadcrumb separator-class="el-icon-arrow-right">
 				<span class=v-location><i class=el-icon-caret-right></i>当前位置：</span>
-				<a class="v-bread" href="javascript:;">报表统计</a>
+				<a class="v-bread" href="javascript:;" onclick="history.back()">报表统计 > </a>
+				<a class="v-bread" href="javascript:;">打包站数据统计</a>
 			</el-breadcrumb>
 			<!--search-->
 			<el-form :inline="true" :model="searchData" class="demo-form-inline">
@@ -14,7 +15,7 @@
 					<i class="el-icon-location"></i>
 				</span>
 				<el-form-item label="所属城市：">
-					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
+					<el-select disabled v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
 						<el-option label="蚌埠市" value="445"></el-option>
 					</el-select>
 				</el-form-item>
@@ -96,9 +97,10 @@
 		data() {
 			return {
 				searchData: {
-					cityId: 103,
+					countyName: '蚌埠市',
+					cityId: '',
 					countyName: '',
-					countyId: 1042,
+					countyId: '',
 					startDate: '2017-11-25',
 					endDate: ''
 				},
@@ -118,8 +120,8 @@
 			getLists() {
 				console.log(this.searchData.startDate);
 				var params = new URLSearchParams()
-				params.append('cityId', this.searchData.cityId)
-				params.append('countyId', this.searchData.countyId)
+				params.append('cityId', this.searchData.cityId || 103)
+				params.append('countyId', this.searchData.countyId || 1042)
 				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
 				axios.post('/sumpackage/sumpackageranking', params).then((data) => {
@@ -321,6 +323,10 @@
 
 	.el-select-dropdown__item {
 		color: #fff;
+	}
+	.el-input.is-disabled .el-input__inner{
+		background-color: transparent;
+		border-color: #999;
 	}
 
 	//按钮颜色

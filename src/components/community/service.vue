@@ -17,7 +17,7 @@
 						<el-option label="蚌埠市" value="445"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="所属地区：">
+				<!--<el-form-item label="所属地区：">
 					<el-select v-model="searchData.countyName" placeholder="请选择" :style="{'width': '140px'}">
 						<el-option label="请选择" value="0"></el-option>
 						<el-option
@@ -27,7 +27,7 @@
 								:value="item.id">
 						</el-option>
 					</el-select>
-				</el-form-item>
+				</el-form-item>-->
 				<el-form-item label="时间段：">
 					<el-date-picker
 							v-model="searchData.startDate"
@@ -247,7 +247,12 @@
 			//获取默认加载的全部数据
 			getSubData() {
 				//获取服务亭总体数据
-				axios.get(`/countdelivery/countnum?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
+				var params = new URLSearchParams()
+				params.append('cityId', this.searchData.cityId)
+				params.append('countyId', this.searchData.countyId)
+				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
+				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
+				axios.get(`/countdelivery/countnum`, params).then((data) => {
 					let res = data.data
 					if(res.code != 0) return alert(res.msg)
 					//区列表

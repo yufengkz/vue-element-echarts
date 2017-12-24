@@ -20,7 +20,6 @@
 			}
 		},
 		mounted() {
-			console.log(this.$route.params.id);
 			let orderNum = this.$route.params.id
 			axios.get(`/userfactory/checkimage?orderNum=${orderNum}`).then( (data) => {
 				let res = data.data

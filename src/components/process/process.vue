@@ -103,7 +103,7 @@
 							<!--<p>公司</p>-->
 							<p>发货时间：{{item.sendTime | formatDate}}</p>
 							<p>交货时间：{{item.arriveTime | formatDate}}</p>
-							<router-link :to="'/prc/routes/'+item.flowOrderNum">查看车辆行使轨迹<i
+							<router-link :to="'/prc/routes/0/'+item.flowOrderNum">查看车辆行使轨迹<i
 									class="el-icon-d-arrow-right"></i></router-link>
 						</td>
 						<td>
@@ -120,7 +120,7 @@
 							<p>发货时间：{{item.sendTransportTime | formatDate}}</p>
 							<p>交货时间：{{item.transportArriveTime | formatDate}}</p>
 							<p>{{item.houseName}}-{{item.substationName}}</p>
-							<!--<router-link to="/prc/routes">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>-->
+							<router-link :to="'/prc/routes/1/'+item.arteryOrderNum">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
 						</td>
 						<td>
 							<p>No.{{item.arteryOrderNum}}</p>
@@ -131,7 +131,7 @@
 				</table>
 
 
-				<div v-if="data.length >= 2" class="showmore">
+				<div v-if="data.length > 2" class="showmore">
 					<a href="javascript:;" @click="showMore" :class="{active: showall}">点击加载更多 <i class="el-icon-arrow-down"></i></a>
 				</div>
 			</div>
@@ -179,8 +179,13 @@
 			},
 			//查看回收品分类
 			_getRecycleDetail(orderNum) {
+				if(!orderNum){
+					this.classIfyData = [{recycleTypeTitle: '没有查到信息'}]
+					return
+				}
 				axios.get('/userfactory/recycledetail?orderNum=' + orderNum).then((data) => {
 					let res = data.data.recycleList
+					console.log(res);
 					if (res.length == 0) res = [{recycleTypeTitle: ' ', weight: '-', totalPrice: '-'}]
 					this.classIfyData = res
 				}).catch((e) => {

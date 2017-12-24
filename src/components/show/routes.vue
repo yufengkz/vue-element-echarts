@@ -14,38 +14,44 @@
 	export default {
 		name: '',
 		data() {
-			return {}
+			return {
+				map: ''
+			}
+		},
+		methods: {
+			initMap(data){
+				// 百度地图API功能
+				// 创建Map实例
+				this.map = new BMap.Map("v-allmap", {enableMapClick: true})
+				let x = data[0].lng
+				let y = data[0].lat
+				this.map.centerAndZoom(new BMap.Point(x, y), 15) //中心点 蚌埠 117.395639, 32.921375 根据第一个确定中心点
+				this.map.enableScrollWheelZoom(true) //滚轮放大缩小
+				this.map.setMapStyle({style:'grayscale'}) //设置地图主题
+				//map.enableScrollWheelZoom(true);  //启用滚轮放大缩小
+			}
 		},
 		mounted() {
-
-			// 百度地图API功能
-			// 创建Map实例
-			var map = new BMap.Map("v-allmap", {enableMapClick: true})
-			map.centerAndZoom(new BMap.Point(121.493262, 31.237015), 15) //中心点 蚌埠 117.395639, 32.921375
-			map.enableScrollWheelZoom(true) //滚轮放大缩小
-			map.setMapStyle({style:'grayscale'}) //设置地图主题
-			//map.enableScrollWheelZoom(true);  //启用滚轮放大缩小
+			let that = this
 
 			function showPoly(pointList, houseName) {
-				console.log(pointList)
-				console.log(houseName)
 				//循环显示点对象
 				for (let c = 0; c < pointList.length; c ++) {
 					//设置定位图标
 					var myPosIcon = new BMap.Icon(posiIco, new BMap.Size(19, 25))
 					var marker = new BMap.Marker(pointList[c], { icon: myPosIcon })
-					map.addOverlay(marker); //画出marker
+					that.map.addOverlay(marker); //画出marker
 					marker.setAnimation(BMAP_ANIMATION_DROP) //设置marker进场动画
 					//将途经点按顺序添加到地图上  显示该点的名称
 
 					//设置旗点和路径点 都是服务亭
 					if(c !== pointList.length - 1){
-						var label = new BMap.Label(houseName[c] + '服务亭', {
+						var label = new BMap.Label(houseName[c], {
 							offset: new BMap.Size(20, -2) //偏移量
 						});
 					}else{
 						//最后一个点是终点 打包站
-						var label = new BMap.Label(houseName[c] + '打包站', {
+						var label = new BMap.Label(houseName[c], {
 							offset: new BMap.Size(20, -2) //偏移量
 						});
 					}
@@ -63,7 +69,7 @@
 				var group = Math.floor(pointList.length / 11)
 				var mode = pointList.length % 11;
 
-				var driving = new BMap.DrivingRoute(map, {
+				var driving = new BMap.DrivingRoute(that.map, {
 					onSearchComplete: function (results) {
 						if (driving.getStatus() == BMAP_STATUS_SUCCESS) {
 							var plan = driving.getResults().getPlan(0);
@@ -72,7 +78,7 @@
 							for (var j = 0; j < num; j++) {
 								var pts = plan.getRoute(j).getPath(); //通过驾车实例，获得一系列点的数组
 								var polyline = new BMap.Polyline(pts,  {strokeColor: '#f83d3d', strokeWeight:6, strokeOpacity:0.8});
-								map.addOverlay(polyline);
+								that.map.addOverlay(polyline);
 							}
 						}
 					}
@@ -96,17 +102,20 @@
 			// ======================================================== //
 			//map地图画点
 			let orderNum = this.$route.params.id //这个单号有数据30033481512695867208
+			let type = this.$route.params.type //type 根据不同的type调用不同的接口
 
 			let endP = {}
 			let packName
 			let houseName = []
-			axios.get(`/userfactory/checkcartrack?orderNum=${orderNum}`).then( (data) => {
+			let url
+			if(type == 0) url = `/userfactory/checkcartrack?orderNum=${orderNum}`
+			if(type == 1) url = `/userfactory/checkarterycartrack?orderNum=${orderNum}`
+			axios.get(url).then( (data) => {
 				let arrayList = []
 				let res = data.data.geographyList
-				console.log(data);
 				res.forEach((item, index) => {
-					let P = new BMap.Point(item.houseX, item.houseY)
-					endP =  new BMap.Point(item.siteX, item.siteY)
+					let P = new BMap.Point(item.houseX, item.houseY)  //服务亭 - 打包站
+					endP =  new BMap.Point(item.siteX, item.siteY) //打包站 - 工厂
 					arrayList.push(P) //把map点放到数组中
 					houseName.push(item.houseName) //把名称放到数组中
 
@@ -118,6 +127,7 @@
 
 				return arrayList
 			}).then( (data) => {
+				this.initMap(data)
 				//显示轨迹
 				showPoly(data, houseName)
 			})
