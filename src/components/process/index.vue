@@ -83,10 +83,8 @@
 		methods: {
 			//查询数据
 			onSubmit() {
-				console.log('查询!');
 				//console.log(this.searchData)
 				//this.$refs.ProcessLists.$emit('aa')
-				console.log(this.$refs.ProcessLists);
 				this.$refs.ProcessLists._getLists()
 			}
 		},

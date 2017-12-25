@@ -116,17 +116,15 @@
 		},
 		methods: {
 			getLists() {
-				console.log(this.searchData.startDate);
 				var params = new URLSearchParams()
 				params.append('cityId', this.searchData.cityId  || 103)
 				params.append('countyId', this.searchData.countyId || 1042)
 				params.append('startDate', new Date(this.searchData.startDate).getTime() || new Date().getTime())
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
-				axios.post('/countranking/sumranking', params).then((data) => {
+				axios.post(baseUrl + '/countranking/sumranking', params).then((data) => {
 					//调试先反转一下
 					if(data.data.code == 0){
 						let res = data.data.data
-						console.log(res);
 						//柱状图
 						this.columnData = {
 							huishou: res.fwtdayhuishou,
@@ -153,15 +151,11 @@
 				})
 			},
 			onSubmit() {
-				console.log('search:');
-				console.log(this.searchData);
 				this.getLists()
 			}
 		},
 		mounted() {
 			this.getLists()
-			console.log('==========');
-			console.log(this.$store.state.countyLists);
 
 		},
 		components: {

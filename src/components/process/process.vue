@@ -168,11 +168,9 @@
 			//获取列表信息
 			_getLists() {
 				let data = this.searchData
-				console.log(data);
-				axios.post('/userfactory/usertofactorys', data).then((data) => {
+				axios.post(baseUrl + '/userfactory/usertofactorys', data).then((data) => {
 					//调试先反转一下
 					this.data = data.data.userList
-					console.log(data.data);
 				}).catch((e) => {
 					console.log(e);
 				})
@@ -183,9 +181,8 @@
 					this.classIfyData = [{recycleTypeTitle: '没有查到信息'}]
 					return
 				}
-				axios.get('/userfactory/recycledetail?orderNum=' + orderNum).then((data) => {
+				axios.get(baseUrl + '/userfactory/recycledetail?orderNum=' + orderNum).then((data) => {
 					let res = data.data.recycleList
-					console.log(res);
 					if (res.length == 0) res = [{recycleTypeTitle: ' ', weight: '-', totalPrice: '-'}]
 					this.classIfyData = res
 				}).catch((e) => {

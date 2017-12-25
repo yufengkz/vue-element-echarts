@@ -26,8 +26,6 @@
 				this.timeData = []
 				this.hsData = []
 				//格式化数据
-				console.log('sadasdsadasdsa');
-				console.log(this.columnData);
 				this.columnData.huishou.forEach((item, index) => {
 					this.timeData.push(item.ctimes)
 					this.hsData.push(item.net_weight)

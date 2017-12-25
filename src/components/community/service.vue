@@ -13,7 +13,7 @@
 					<i class="el-icon-location"></i>
 				</span>
 				<el-form-item label="所属城市：">
-					<el-select v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
+					<el-select disabled v-model="searchData.cityName" placeholder="蚌埠市" :style="{'width': '140px'}">
 						<el-option label="蚌埠市" value="445"></el-option>
 					</el-select>
 				</el-form-item>
@@ -196,6 +196,9 @@
 					weight: 0, //单个服务亭、打包站运输量
 					user_mobile: 0, //单个服务亭、打包站总用户数
 				},
+
+				type: 1,
+				id: ''
 			}
 		},
 		methods: {
@@ -220,6 +223,9 @@
 				this.checkElm = true
 				this.serviceSHow = 9
 				this.packSHow = 8
+
+				//设置type调用不同的
+				this.type = 1
 				//设置title
 				this.mapTitle = this.serviceData.houseNum
 				//设置跳到哪里
@@ -233,6 +239,10 @@
 				this.checkElm = false
 				this.serviceSHow = 8
 				this.packSHow = 9
+
+				//设置type调用不同的
+				this.type = 2
+				this.id = 31
 				//设置title
 				this.mapTitle = this.packData.package
 				//设置跳到哪里
@@ -248,15 +258,16 @@
 			getSubData() {
 				//获取服务亭总体数据
 				var params = new URLSearchParams()
-				params.append('cityId', this.searchData.cityId)
-				params.append('countyId', this.searchData.countyId)
+				params.append('cityId', this.searchData.cityId || 103)
+				params.append('countyId', this.searchData.countyId || 1042)
 				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
-				axios.get(`/countdelivery/countnum`, params).then((data) => {
+				axios.post(baseUrl + '/countdelivery/countnum', params).then((data) => {
 					let res = data.data
-					if(res.code != 0) return alert(res.msg)
+					if(res.code != 0) return console.log(res.msg)
 					//区列表
 					this.countyLists = res.data.country
+					console.log(this.countyLists);
 					this.$store.commit('set', res.data.country)
 //					console.log(res.data);
 					//总数据量
@@ -300,7 +311,7 @@
 				})
 
 				//获取打包站总体数据
-				axios.get(`/countpackage/countsite?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
+				axios.get(baseUrl + `/countpackage/countsite?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
 					let res = data.data
 					if(res.code != 0) return alert(res.msg)
 					//打包站的区列表  蚌埠市的区域列表应该都是一样的
@@ -349,10 +360,17 @@
 
 			//获取默认单个服务亭、打包站数据
 			getOneServiceData(nId, type){
+				var params = new URLSearchParams()
+				//params.append('cityId', this.searchData.cityId  || 103)
+				//params.append('countyId', this.searchData.countyId || 1042)
+				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
+				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
 				if(type === 1){
 					//获取服务亭
 					let sId = nId || 15
-					axios.get('/countdelivery/houselist?id=' + sId).then( (data) => {
+					params.append('id', sId)
+					axios.post(baseUrl + '/countdelivery/houselist', params).then((data) => {
+					//axios.get(baseUrl + '/countdelivery/houselist?id=' + sId).then( (data) => {
 						let res = data.data
 						this.oneServiceData = {
 							name: res.weightUser.nickname || '未查到信息', //服务亭名称
@@ -377,7 +395,9 @@
 				}else if(type === 2){
 					//获取打包站
 					let pId = nId || 31
-					axios.get('/countpackage/sitelist?id=' + pId).then( (data) => {
+					params.append('id', pId)
+					axios.post(baseUrl + '/countpackage/sitelist', params).then((data) => {
+					//axios.get(baseUrl + '/countpackage/sitelist?id=' + pId).then( (data) => {
 						let res = data.data
 						this.onePackData = {
 							name: res.weightUser.site_name || '未查到信息', //打包站名称
@@ -395,8 +415,9 @@
 
 			//查询数据
 			onSubmit() {
-				console.log('查询!');
-				console.log(this.searchData)
+				let id = this.id
+				this.getOneServiceData(id, this.type)
+
 			},
 
 			//初始化map
@@ -420,7 +441,6 @@
 						show: true,
 						formatter: function (params, ticket, callback) {
 							var $pna = params.name;
-							console.log($pna);
 							var res = '';
 							for (var i = 0; i < dataService.length; i++) {
 								if (dataService[i].name == $pna) {
@@ -652,6 +672,7 @@
 				myChartService.on('click', (params) => {
 					this.searchData.area = params.data.name //设置默认加载数据的searchData
 					let id = params.data.id
+					this.id = params.data.id
 					this.getOneServiceData(id, 1)
 				})
 			},
@@ -908,6 +929,7 @@
 				myChartPack.on('click', (params) => {
 					this.searchData.area = params.data.name //设置默认加载数据的searchData
 					let id = params.data.id
+					this.id = params.data.id
 					this.getOneServiceData(id, 2)
 				})
 				setTimeout(() => {
@@ -937,7 +959,7 @@
 			this.getSubData()
 
 			//获取某个服务亭\打包站的数据 type:1 服务亭 type:2 打包站
-			this.getOneServiceData('', 1)
+			this.getOneServiceData(this.id, 1)
 
 			//页面加载默认设置一次列表数据
 
@@ -1198,6 +1220,10 @@
 	}
 	.el-select-dropdown__item{
 		color: #fff;
+	}
+	.el-input.is-disabled .el-input__inner{
+		background-color: transparent;
+		border-color: #999;
 	}
 	//按钮颜色
 	.el-button--sd-yellow{

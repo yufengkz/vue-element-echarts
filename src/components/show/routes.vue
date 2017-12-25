@@ -1,7 +1,7 @@
 <template>
 	<div class="v-showbox">
 		<div class="v-title">
-			<h3>服务厅-打包站车辆轨迹</h3>
+			<h3>服务厅-打包站车辆轨迹 <a href="javascript:;" onclick="history.back()">关闭</a></h3>
 		</div>
 		<div class=v-allmap id=v-allmap>
 			地图加载失败，请检查网络或刷新网页...
@@ -108,8 +108,8 @@
 			let packName
 			let houseName = []
 			let url
-			if(type == 0) url = `/userfactory/checkcartrack?orderNum=${orderNum}`
-			if(type == 1) url = `/userfactory/checkarterycartrack?orderNum=${orderNum}`
+			if(type == 0) url = baseUrl + `/userfactory/checkcartrack?orderNum=${orderNum}`
+			if(type == 1) url = baseUrl + `/userfactory/checkarterycartrack?orderNum=${orderNum}`
 			axios.get(url).then( (data) => {
 				let arrayList = []
 				let res = data.data.geographyList
@@ -187,6 +187,13 @@
 			h3{
 				font-size: 24px;
 				color: #00ffd6;
+
+				a{
+					color: #00ffd6;
+					font-size: 18px;
+					float: right;;
+					margin-right: 20px;
+				}
 			}
 		}
 	}

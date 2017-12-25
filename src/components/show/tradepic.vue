@@ -1,7 +1,7 @@
 <template>
 	<div class="v-showbox">
 		<div class="v-title">
-			<h3>服务亭现场交易图片</h3>
+			<h3>服务亭现场交易图片 <a href="javascript:;" onclick="history.back()">关闭</a></h3>
 		</div>
 		<el-carousel :interval="30000" type="card" height="605px" arrow="always">
 			<el-carousel-item v-for="item in picData" :key="item">
@@ -21,14 +21,13 @@
 		},
 		mounted() {
 			let orderNum = this.$route.params.id
-			axios.get(`/userfactory/checkimage?orderNum=${orderNum}`).then( (data) => {
+			axios.get(baseUrl + `/userfactory/checkimage?orderNum=${orderNum}`).then( (data) => {
 				let res = data.data
 				let imageUrl = res.imageUrl
 				let imgArr = res.pathList
 				this.picData = imgArr.map( (item) => {
 					return imageUrl + item
 				})
-				console.log(this.picData);
 			})
 		}
 	}
@@ -68,6 +67,13 @@
 			h3{
 				font-size: 24px;
 				color: #00ffd6;
+
+				a{
+					color: #00ffd6;
+					font-size: 18px;
+					float: right;;
+					margin-right: 20px;
+				}
 			}
 		}
 	}

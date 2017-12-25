@@ -101,7 +101,7 @@
 					cityId: '',
 					countyName: '',
 					countyId: '',
-					startDate: '2017-11-25',
+					startDate: '',
 					endDate: ''
 				},
 				pickerOptions1: {
@@ -118,17 +118,15 @@
 		},
 		methods: {
 			getLists() {
-				console.log(this.searchData.startDate);
 				var params = new URLSearchParams()
 				params.append('cityId', this.searchData.cityId || 103)
 				params.append('countyId', this.searchData.countyId || 1042)
 				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
-				axios.post('/sumpackage/sumpackageranking', params).then((data) => {
+				axios.post(baseUrl + '/sumpackage/sumpackageranking', params).then((data) => {
 					//调试先反转一下
 					if(data.data.code == 0){
 						let res = data.data.data
-						console.log(res);
 						//柱状图
 						this.columnData = {
 							huishou: res.fwtdayhuishou,
@@ -155,8 +153,6 @@
 				})
 			},
 			onSubmit() {
-				console.log('search:');
-				console.log(this.searchData);
 				this.getLists()
 			}
 		},

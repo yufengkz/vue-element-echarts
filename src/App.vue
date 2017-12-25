@@ -33,11 +33,11 @@
 <style lang="less">
 	body{
 		width: 100%;
-		background: url('./assets/img/bg.png') repeat-y;
+		background: url('./assets/img/bg.jpg') repeat-y;
 		background-size: 100% 100%;
 		background-size: cover;
 		position: absolute;
-		filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='./assets/img/bg.png',sizingMethod='scale');
+		filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='./assets/img/bg.jpg',sizingMethod='scale');
 	}
 	.v-container{
 		padding: 0 1.875%;
