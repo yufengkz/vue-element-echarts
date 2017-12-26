@@ -18,12 +18,12 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 	.v-home{
-		height: 600px;
+		height: 800px;
 		background: url(../assets/img/pro-bg.png) no-repeat;
 		background-size: 100% 100%;
 		color: #fff;
 		text-align: center;
-		line-height: 600px;
+		line-height: 800px;
 		font-size: 50px;
 	}
 </style>

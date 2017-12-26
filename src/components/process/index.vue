@@ -63,10 +63,10 @@
 		data() {
 			return {
 				searchData: {
-					beginTime: '',
-					endTime: '',
-					orderNum: '',
-					mobile: ''
+					beginTime: this.$store.state.searchData.beginTime || '',
+					endTime: this.$store.state.searchData.endTime || '',
+					orderNum: this.$store.state.searchData.orderNum || '',
+					mobile: this.$store.state.searchData.mobile || ''
 				},
 
 				pickerOptions1: {
@@ -83,10 +83,14 @@
 		methods: {
 			//查询数据
 			onSubmit() {
+				this.$store.commit('setSearchData', this.searchData)
 				//console.log(this.searchData)
 				//this.$refs.ProcessLists.$emit('aa')
 				this.$refs.ProcessLists._getLists()
 			}
+		},
+		mounted() {
+			console.log(this.searchData);
 		},
 		components: {
 			ProcessLists

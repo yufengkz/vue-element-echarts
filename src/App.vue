@@ -48,7 +48,7 @@
 	.el-aside{
 		width: 100%;
 		width: 262px;
-		height: 600px;
+		height: 800px;
 		background: url('./assets/img/left-side-bg.png') center no-repeat;
 		background-size: 100% 100%;
 	}

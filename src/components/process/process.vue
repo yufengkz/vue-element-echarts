@@ -309,7 +309,7 @@
 							position: absolute;
 							top: -80px;
 							left: 100px;
-							width: 210px;
+							min-width: 240px;
 							height: 200px;
 							overflow-y: auto;
 							background: url(../../assets/img/more-bg.png) repeat-y;

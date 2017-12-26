@@ -10,11 +10,15 @@ const store = new Vuex.Store({
 	state: {
 		count: 0,
 		color: ['#00c6d7', '#0b7bdc'],
-		countyLists: []
+		countyLists: [],
+		searchData: {}
 	},
 	mutations: {
 		set(state, data){
 			state.countyLists = data
+		},
+		setSearchData(state, data){
+			state.searchData = data
 		}
 	},
 	strict: debug,
