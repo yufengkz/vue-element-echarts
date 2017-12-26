@@ -74,6 +74,7 @@
 					<tr v-for="(item, index) in data" :key="index">
 						<td>
 							<p>{{item.userName}}</p>
+							<p>{{item.userMobile}}</p>
 							<p>{{item.address}}</p>
 							<p>{{item.orderNum}}</p>
 							<p>No.{{item.recycleOrderCtime | formatDate}}</p>
@@ -311,6 +312,7 @@
 							left: 100px;
 							min-width: 240px;
 							height: 200px;
+							padding: 0 10px;
 							overflow-y: auto;
 							background: url(../../assets/img/more-bg.png) repeat-y;
 							background-size: 100% 100%;
