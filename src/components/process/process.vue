@@ -245,7 +245,6 @@
 
 				for (let i = 0; i < aLi.length; i++) {
 					(function (n) {
-						console.log(n);
 						runAsync(aLi[i], 300, n)
 					})(i)
 				}
