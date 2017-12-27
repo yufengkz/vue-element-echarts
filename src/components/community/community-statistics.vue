@@ -58,7 +58,7 @@
 					<column ref="initColumn" :columnData="columnData"></column>
 				</div>
 			</el-col>
-			<el-col :span="12" :style="{'margin-left': '20px'}">
+			<el-col :span="12" class="fr">
 				<div class="grid-content bg-purple-light">
 					<!--折线图-->
 					<multipleColumn ref="initMultipleColumn" :multipleColumnData="multipleColumnData"></multipleColumn>
@@ -70,7 +70,7 @@
 					<lists :weightUser="weightUser"></lists>
 				</div>
 			</el-col>
-			<el-col :span="12" :style="{'margin-left': '20px'}">
+			<el-col :span="12" class="fr">
 				<div class="list_bd">
 					<!--list-->
 					<userCountLists :userNumList="userNumList"></userCountLists>
@@ -119,7 +119,7 @@
 				var params = new URLSearchParams()
 				params.append('cityId', this.searchData.cityId  || 103)
 				params.append('countyId', this.searchData.countyId || 1042)
-				params.append('startDate', new Date(this.searchData.startDate).getTime() || new Date().getTime())
+				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
 				axios.post(baseUrl + '/countranking/sumranking', params).then((data) => {
 					//调试先反转一下

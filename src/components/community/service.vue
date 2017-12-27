@@ -17,8 +17,8 @@
 						<el-option label="蚌埠市" value="445"></el-option>
 					</el-select>
 				</el-form-item>
-				<!--<el-form-item label="所属地区：">
-					<el-select v-model="searchData.countyName" placeholder="请选择" :style="{'width': '140px'}">
+				<el-form-item label="所属地区：">
+					<el-select value-key="searchData.countyId" v-model="searchData.countyId" placeholder="请选择" :style="{'width': '140px'}">
 						<el-option label="请选择" value="0"></el-option>
 						<el-option
 								v-for="(item, index) in countyLists"
@@ -27,7 +27,7 @@
 								:value="item.id">
 						</el-option>
 					</el-select>
-				</el-form-item>-->
+				</el-form-item>
 				<el-form-item label="时间段：">
 					<el-date-picker
 							v-model="searchData.startDate"
@@ -142,7 +142,7 @@
 					cityName: '蚌埠市',
 					cityId: 103,  //市
 					countyName: '请选择',  //区
-					countyId: 1042,  //区
+					countyId: '',  //区
 					startDate: '',
 					endDate: ''
 				},
@@ -267,7 +267,6 @@
 					if(res.code != 0) return console.log(res.msg)
 					//区列表
 					this.countyLists = res.data.country
-					console.log(this.countyLists);
 					this.$store.commit('set', res.data.country)
 //					console.log(res.data);
 					//总数据量
@@ -311,13 +310,12 @@
 				})
 
 				//获取打包站总体数据
-				axios.get(baseUrl + `/countpackage/countsite?cityId=${this.searchData.cityId}&countyId=${this.searchData.countyId}`).then((data) => {
+				axios.post(baseUrl + '/countpackage/countsite', params).then((data) => {
 					let res = data.data
-					if(res.code != 0) return alert(res.msg)
+					if(res.code != 0) return console.log(res.msg)
 					//打包站的区列表  蚌埠市的区域列表应该都是一样的
 					this.countyLists = res.data.country
 					this.$store.commit('set', res.data.country)
-
 					//总数据量
 					this.packData = {
 						order_recycle_weight: res.data.siteliat.order_recycle_weight || 0, //回收货物总重量
@@ -361,8 +359,8 @@
 			//获取默认单个服务亭、打包站数据
 			getOneServiceData(nId, type){
 				var params = new URLSearchParams()
-				//params.append('cityId', this.searchData.cityId  || 103)
-				//params.append('countyId', this.searchData.countyId || 1042)
+				params.append('cityId', this.searchData.cityId  || 103)
+				params.append('countyId', this.searchData.countyId || 1042)
 				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
 				if(type === 1){
@@ -374,7 +372,7 @@
 						let res = data.data
 						this.oneServiceData = {
 							name: res.weightUser.nickname || '未查到信息', //服务亭名称
-							weightUser: res.weightUser.weight || '未查到信息', //单个服务亭回收量
+							weightUser: res.weightUser.net_weight || '未查到信息', //单个服务亭回收量
 							weight: res.weight || '未查到信息', //单个服务亭运输量
 							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个服务亭总用户数
 						}
@@ -401,7 +399,7 @@
 						let res = data.data
 						this.onePackData = {
 							name: res.weightUser.site_name || '未查到信息', //打包站名称
-							weightUser: res.weightUser.weight || '未查到信息', //单个打包站回收量
+							weightUser: res.weightUser.net_weight || '未查到信息', //单个打包站回收量
 							weight: res.weight || '未查到信息', //单个打包站运输量
 							user_mobile: res.weightUser.user_mobile || '未查到信息', //单个打包站总用户数
 						}
@@ -415,9 +413,10 @@
 
 			//查询数据
 			onSubmit() {
+				this.getSubData()
+
 				let id = this.id
 				this.getOneServiceData(id, this.type)
-
 			},
 
 			//初始化map
@@ -458,7 +457,7 @@
 					},
 					bmap: {
 						map: 'china',
-						center: [117.395639, 32.921375], //这个坐标点是显示中国地图的中心：center: [104.114129, 37.550339]
+						center: this.mapDataService[0].coordinate || [117.395639, 32.921375],//[117.395639, 32.921375], //这个坐标点是显示中国地图的中心：center: [104.114129, 37.550339]
 						zoom: 13, //5是显示全国地图
 						roam: true,
 						mapStyle: {
@@ -714,8 +713,8 @@
 					},
 					bmap: {
 						map: 'china',
-						center: [104.114129, 37.550339],
-						zoom: 5,
+						center:  this.mapDataPack[0].coordinate || [104.114129, 37.550339],
+						zoom: 13,
 						roam: true,
 						mapStyle: {
 							styleJson: [

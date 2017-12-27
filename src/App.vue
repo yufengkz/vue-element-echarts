@@ -5,7 +5,7 @@
 				<MHeader></MHeader>
 			</el-header>
 			<el-container class="v-container">
-				<el-aside width="262px">
+				<el-aside width="220px">
 					<Slide></Slide>
 				</el-aside>
 				<el-main>

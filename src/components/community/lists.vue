@@ -60,6 +60,9 @@
 	}
 </script>
 <style lang="less">
+	.el-table th, .el-table tr{
+		background-color: #051030 !important;
+	}
 	.el-table, .el-table__expanded-cell{
 		background-color: #051030;
 	}
@@ -78,5 +81,8 @@
 	}
 	.el-table--border::after, .el-table--group::after, .el-table::before{
 		background-color: transparent;
+	}
+	.el-table__body-wrapper{
+		overflow: inherit;
 	}
 </style>

@@ -72,15 +72,20 @@
 				<table>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="index">
-						<td>
+						<!--第一列-->
+						<td v-if="item.orderNum">
 							<p>{{item.userName}}</p>
 							<p>{{item.userMobile}}</p>
 							<p>{{item.address}}</p>
 							<p>{{item.orderNum}}</p>
 							<p>No.{{item.recycleOrderCtime | formatDate}}</p>
 						</td>
-						<td>
-							<p>{{item.houseName}}</p>
+						<td v-else="item.orderNum" :style="style">
+							<p>——</p>
+						</td>
+						<!--第二列-->
+						<td v-if="item.orderNum">
+							<p>{{item.orderNum}}</p>
 							<p>No.{{item.orderNum}}</p>
 							<div>
 							<span class="v-more" @mouseover="_getRecycleDetail(item.orderNum)"> 查看回收品类 >
@@ -97,7 +102,11 @@
 							<router-link :to="'/prc/tradepic/'+item.orderNum">查看现场交易图片<i
 									class="el-icon-d-arrow-right"></i></router-link>
 						</td>
-						<td>
+						<td v-else="item.orderNum" :style="style">
+							<p>——</p>
+						</td>
+						<!--第三列-->
+						<td v-if="item.flowOrderNum">
 							<p>No.{{item.flowOrderNum}}</p>
 							<p>车牌号：{{item.carrierCarnum}}</p>
 							<p>司机名称：{{item.shipMentCarrierName}}</p>
@@ -107,13 +116,21 @@
 							<router-link :to="'/prc/routes/0/'+item.flowOrderNum">查看车辆行使轨迹<i
 									class="el-icon-d-arrow-right"></i></router-link>
 						</td>
-						<td>
+						<td v-else="item.flowOrderNum" :style="style">
+							<p>——</p>
+						</td>
+						<!--第四列-->
+						<td v-if="item.flowOrderNum">
 							<p>No.{{item.flowOrderNum}}</p>
 							<p>{{item.substationName}}</p>
 							<router-link :to="'/prc/tradepic/'+item.flowOrderNum">查看现场交易图片<i
 									class="el-icon-d-arrow-right"></i></router-link>
 						</td>
-						<td>
+						<td v-else="item.flowOrderNum" :style="style">
+							<p style="{width: 180px}">——</p>
+						</td>
+						<!--第五列-->
+						<td v-if="item.arteryOrderNum">
 							<p>No.{{item.arteryOrderNum}}</p>
 							<p>车牌号：{{item.otcarNum}}</p>
 							<p>司机名称：{{item.carrierName}}</p>
@@ -123,9 +140,16 @@
 							<p>{{item.houseName}}-{{item.substationName}}</p>
 							<router-link :to="'/prc/routes/1/'+item.arteryOrderNum">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
 						</td>
-						<td>
+						<td v-else="item.arteryOrderNum" :style="style">
+							<p>——</p>
+						</td>
+						<!--第六列-->
+						<td v-if="item.arteryOrderNum">
 							<p>No.{{item.arteryOrderNum}}</p>
 							<p>{{item.houseName}}-{{item.substationName}}</p>
+						</td>
+						<td v-else="item.arteryOrderNum" :style="style">
+							<p>——</p>
 						</td>
 					</tr>
 					</tbody>
@@ -153,7 +177,11 @@
 				data: [],
 				classIfyData: [],
 				loaded: false,
-				showall: false
+				showall: false,
+				style: {
+					width: '160px',
+					height: '210px'
+				}
 			}
 		},
 		created (){
@@ -216,7 +244,10 @@
 				}
 
 				for (let i = 0; i < aLi.length; i++) {
-					runAsync(aLi[i], 300, i)
+					(function (n) {
+						console.log(n);
+						runAsync(aLi[i], 300, n)
+					})(i)
 				}
 			},
 
@@ -280,9 +311,10 @@
 			width: 100%;
 		}
 		tr {
-			width: 10%;
+			min-height: 210px;
 
 			td {
+				min-height: 210px;
 				border-bottom: 1px solid #394157;
 				border-right: 1px solid #394157;
 
@@ -308,10 +340,10 @@
 						.v-more-lists {
 							display: none;
 							position: absolute;
-							top: -80px;
+							top: -56px;
 							left: 100px;
-							min-width: 240px;
-							height: 200px;
+							min-width: 220px;
+							height: 150px;
 							padding: 0 10px;
 							overflow-y: auto;
 							background: url(../../assets/img/more-bg.png) repeat-y;
