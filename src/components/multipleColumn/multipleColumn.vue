@@ -33,7 +33,7 @@
 				this.myChart = echarts.init(document.querySelector('.multipleColumn'));
 				let option = {
 					title: {
-						text: "服务亭量",
+						text: "对应数量",
 						textStyle: {
 							color: '#fff', //图表基本样式设置 color,fontStyle,fontWeight,textShadowOffsetX...(http://echarts.baidu.com/option.html#title)
 							fontSize: '20px'
@@ -43,7 +43,7 @@
 					},
 					tooltip: {
 						trigger: "item",
-						formatter: "{a} <br/>{b} : {c}"
+						formatter: "{b} : {c}" //"{a} <br/>{b} : {c}"
 					},
 					legend: {
 						x: 'left',
@@ -106,7 +106,7 @@
 					calculable: true,
 					series: [
 						{
-							name: "用户量",
+							name: "",
 							type: "line",
 							data: this.userCount,//[2, 2223, 81, 247, 741, 1000, 6669], //长度7
 							itemStyle : { normal: {label : {show: true}}}

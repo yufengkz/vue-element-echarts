@@ -63,8 +63,8 @@
 		data() {
 			return {
 				searchData: {
-					beginTime: this.$store.state.searchData.beginTime || '',
-					endTime: this.$store.state.searchData.endTime || '',
+					beginTime: new Date(this.$store.state.searchData.beginTime).getTime() || '',
+					endTime: new Date(this.$store.state.searchData.endTime).getTime() || '',
 					orderNum: this.$store.state.searchData.orderNum || '',
 					mobile: this.$store.state.searchData.mobile || ''
 				},

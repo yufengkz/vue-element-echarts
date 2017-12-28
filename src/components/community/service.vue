@@ -18,8 +18,8 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item label="所属地区：">
-					<el-select value-key="searchData.countyId" v-model="searchData.countyId" placeholder="请选择" :style="{'width': '140px'}">
-						<el-option label="请选择" value="0"></el-option>
+					<el-select value-key="searchData.countyId" v-model="searchData.countyId" placeholder="全部" :style="{'width': '140px'}">
+						<el-option label="全部" value="0"></el-option>
 						<el-option
 								v-for="(item, index) in countyLists"
 								:key="item.index"
@@ -148,7 +148,7 @@
 				},
 				len: 102,
 				mapTitle: 'xxx服务亭',
-				toLink: '#/service/cs',
+				toLink: '#/service/cs/1',
 				mapDataService: [], //地图data
 				mapDataPack: [], //地图data
 				serviceSHow: 9,  //显示zIndex 服务亭
@@ -229,7 +229,7 @@
 				//设置title
 				this.mapTitle = this.serviceData.houseNum
 				//设置跳到哪里
-				this.toLink = '#/service/cs'
+				this.toLink = '#/service/cs/1'
 				//点击后设置列表的数据
 				this.oneData = this.oneServiceData
 
@@ -246,7 +246,7 @@
 				//设置title
 				this.mapTitle = this.packData.package
 				//设置跳到哪里
-				this.toLink = '#/service/cp'
+				this.toLink = '#/service/cp/2'
 				//点击后设置列表的数据
 				this.oneData = this.onePackData
 
@@ -259,7 +259,7 @@
 				//获取服务亭总体数据
 				var params = new URLSearchParams()
 				params.append('cityId', this.searchData.cityId || 103)
-				params.append('countyId', this.searchData.countyId || 1042)
+				params.append('countyId', this.searchData.countyId || 0)
 				params.append('startDate', new Date(this.searchData.startDate).getTime() || '')
 				params.append('endDate', new Date(this.searchData.endDate).getTime() || '')
 				axios.post(baseUrl + '/countdelivery/countnum', params).then((data) => {
@@ -276,7 +276,7 @@
 						houseNum: `蚌埠市服务亭共计${res.data.deliveryList.houseNum || 0}个`, //服务亭总数量
 					}
 					//默认设置地图title
-					this.mapTitle = `蚌埠市服务亭共计${res.data.deliveryList.houseNum || 0}个`
+					if(this.type == 1) this.mapTitle = `蚌埠市服务亭共计${res.data.deliveryList.houseNum || 0}个`
 
 					//调用接口加载服务亭数据
 					let potList = res.data.potList
@@ -315,13 +315,16 @@
 					if(res.code != 0) return console.log(res.msg)
 					//打包站的区列表  蚌埠市的区域列表应该都是一样的
 					this.countyLists = res.data.country
-					this.$store.commit('set', res.data.country)
+					this.$store.commit('set', res.data.country)  //vue-x
+					sessionStorage.setItem('countyLists', JSON.stringify(res.data.country))
 					//总数据量
 					this.packData = {
 						order_recycle_weight: res.data.siteliat.order_recycle_weight || 0, //回收货物总重量
 						net_weight: res.data.siteliat.net_weight || 0, //发运货物总重量
 						package: `蚌埠市打包站共计${res.data.siteliat.package || 0}个`, //服务亭总数量
 					}
+					//设置title
+					if(this.type == 2) this.mapTitle = `蚌埠市打包站共计${res.data.siteliat.package || 0}个` //服务亭总数量
 
 					//调用接口加载打包站map数据
 					let potList = res.data.potList

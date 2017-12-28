@@ -1,61 +1,42 @@
 <template>
-	<el-table
-			:data="weightUser"
-			style="width: 100%">
-		<el-table-column
-				prop="nickname"
-				id="id"
-				label="服务亭/打包站名称"
-				align="center">
-		</el-table-column>
-		<el-table-column
-				prop="net_weight"
-				label="回收量"
-				width="140"
-				align="center">
-		</el-table-column>
-		<el-table-column
-				prop="delivery_weight"
-				label="交运量"
-				width="140"
-				align="center">
-		</el-table-column>
-	</el-table>
+	<div>
+		<table class="el-table">
+			<thead>
+				<th style="text-align: center; color: #fff; font-weight: normal;">{{headerData.title}}</th>
+				<th style="text-align: center; color: #fff; font-weight: normal;">{{headerData.getCount}}</th>
+				<th style="text-align: center; color: #fff; font-weight: normal;">{{headerData.sendCount}}</th>
+			</thead>
+			<tbody v-if="weightUser.length > 0">
+				<tr v-for="item in weightUser">
+					<td align="center">{{item.nickname}}</td>
+					<td align="center">{{item.net_weight}}kg</td>
+					<td align="center">{{item.delivery_weight}}kg</td>
+				</tr>
+			</tbody>
+			<tbody class="el-table-column" v-else>
+				<tr align="center">
+					<td style="text-align: center; color: #666; font-weight: normal;" colspan="20">暂无数据</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </template>
 
 <script>
 	export default {
 		props: {
-			weightUser: Array
+			weightUser: Array,
+			headerData: Object
 		},
 		data() {
 			return {
-				tableData: [{
-					date: '2016-05-02',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1518 弄'
-				}, {
-					date: '2016-05-04',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1517 弄'
-				}, {
-					date: '2016-05-01',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1519 弄'
-				}, {
-					date: '2016-05-03',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1516 弄'
-				}, {
-					date: '2016-05-03',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1516 弄'
-				}, {
-					date: '2016-05-03',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1516 弄'
-				}]
+				title: '服务亭名称',
+				userCount: '用户量',
+				getCount: '回收量',
+				sendCount: '交运量'
 			}
+		},
+		mounted() {
 		}
 	}
 </script>

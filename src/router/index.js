@@ -25,12 +25,12 @@ export default new Router({
 			component: Service
 		},
 		{
-			path: '/service/cs',  //服务亭统计
+			path: '/service/cs/:type',  //服务亭统计
 			name: 'CommunityStatistics',
 			component: CommunityStatistics
 		},
 		{
-			path: '/service/cp',  //打包站统计
+			path: '/service/cp/:type',  //打包站统计
 			name: 'CommunityMap',
 			component: CommunityMap
 		},

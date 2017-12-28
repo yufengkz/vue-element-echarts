@@ -85,7 +85,7 @@
 						</td>
 						<!--第二列-->
 						<td v-if="item.orderNum">
-							<p>{{item.orderNum}}</p>
+							<p>{{item.houseName}}</p>
 							<p>No.{{item.orderNum}}</p>
 							<div>
 							<span class="v-more" @mouseover="_getRecycleDetail(item.orderNum)"> 查看回收品类 >
@@ -122,12 +122,12 @@
 						<!--第四列-->
 						<td v-if="item.flowOrderNum">
 							<p>No.{{item.flowOrderNum}}</p>
-							<p>{{item.substationName}}</p>
-							<router-link :to="'/prc/tradepic/'+item.flowOrderNum">查看现场交易图片<i
-									class="el-icon-d-arrow-right"></i></router-link>
+							<p>{{item.houseName}} - {{item.substationName}}</p>
+							<!--<router-link :to="'/prc/tradepic/'+item.flowOrderNum">查看现场交易图片<i
+									class="el-icon-d-arrow-right"></i></router-link>-->
 						</td>
 						<td v-else="item.flowOrderNum" :style="style">
-							<p style="{width: 180px}">——</p>
+							<p>——</p>
 						</td>
 						<!--第五列-->
 						<td v-if="item.arteryOrderNum">
@@ -137,7 +137,7 @@
 							<p>公司：{{item.carCompany}}</p>
 							<p>发货时间：{{item.sendTransportTime | formatDate}}</p>
 							<p>交货时间：{{item.transportArriveTime | formatDate}}</p>
-							<p>{{item.houseName}}-{{item.substationName}}</p>
+							<p>{{item.houseName}} - {{item.substationName}} - {{item.recycleFactoryName}}</p>
 							<router-link :to="'/prc/routes/1/'+item.arteryOrderNum">查看车辆行使轨迹<i class="el-icon-d-arrow-right"></i></router-link>
 						</td>
 						<td v-else="item.arteryOrderNum" :style="style">
@@ -146,7 +146,7 @@
 						<!--第六列-->
 						<td v-if="item.arteryOrderNum">
 							<p>No.{{item.arteryOrderNum}}</p>
-							<p>{{item.houseName}}-{{item.substationName}}</p>
+							<p>{{item.recycleFactoryName}} - {{item.substationName}} - {{item.houseName}}</p>
 						</td>
 						<td v-else="item.arteryOrderNum" :style="style">
 							<p>——</p>
@@ -179,7 +179,7 @@
 				loaded: false,
 				showall: false,
 				style: {
-					width: '160px',
+					width: '140px',
 					height: '210px'
 				}
 			}
@@ -189,6 +189,7 @@
 		},
 		filters: {
 			formatDate(time){
+				if( ! time) return ' ——'
 				var date = new Date(time);
 				return formatDate(date, 'yyyy-MM-dd hh:mm')
 			}
@@ -196,7 +197,12 @@
 		methods: {
 			//获取列表信息
 			_getLists() {
-				let data = this.searchData
+				let data = {
+					beginTime: new Date(this.searchData.beginTime).getTime() || '',
+					endTime: new Date(this.searchData.endTime).getTime() || '',
+					mobile: this.searchData.mobile || '',
+					orderNum: this.searchData.orderNum || ''
+				}
 				axios.post(baseUrl + '/userfactory/usertofactorys', data).then((data) => {
 					//调试先反转一下
 					this.data = data.data.userList

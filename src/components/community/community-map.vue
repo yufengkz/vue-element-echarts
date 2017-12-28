@@ -20,8 +20,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item label="所属地区：">
-					<el-select v-model="searchData.countyId" placeholder="请选择" :style="{'width': '140px'}">
-						<el-option label="请选择" value="0"></el-option>
+					<el-select value-key="searchData.countyId" v-model="searchData.countyId" placeholder="请选择" :style="{'width': '140px'}">
 						<el-option
 								v-for="(item, index) in countyLists"
 								:key="item.index"
@@ -67,13 +66,13 @@
 			<el-col :span="12">
 				<div class="list_bd">
 					<!--list-->
-					<lists :weightUser="weightUser"></lists>
+					<lists :headerData="headerData" :weightUser="weightUser"></lists>
 				</div>
 			</el-col>
 			<el-col :span="12" :style="{'margin-left': '20px'}">
 				<div class="list_bd">
 					<!--list-->
-					<userCountLists :userNumList="userNumList"></userCountLists>
+					<userCountLists :headerData="headerData" :userNumList="userNumList"></userCountLists>
 				</div>
 			</el-col>
 		</el-row>
@@ -97,10 +96,8 @@
 		data() {
 			return {
 				searchData: {
-					countyName: '蚌埠市',
 					cityId: '',
-					countyName: '',
-					countyId: '',
+					countyId: 1040,
 					startDate: '',
 					endDate: ''
 				},
@@ -109,11 +106,17 @@
 						return time.getTime() > Date.now();
 					}
 				},
-				countyLists: this.$store.state.countyLists,
+				countyLists: this.$store.state.countyLists.length ? this.$store.state.countyLists : JSON.parse(sessionStorage.getItem('countyLists')),
 				columnData: {}, //柱状图数据
 				multipleColumnData: [], //折线图数据
 				weightUser: [], //回收交运量
 				userNumList: [], //用户量
+				headerData: {
+					title: '服务亭名称',
+					userCount: '用户量',
+					getCount: '回收量',
+					sendCount: '交运量'
+				}
 			}
 		},
 		methods: {
@@ -159,6 +162,16 @@
 		mounted() {
 			this.getLists()
 			//console.log(this.$store.state.countyLists);
+			this.type = this.$route.params.type //type
+
+			if(this.type == 1){
+				this.headerData.title = '服务亭名称'
+				this.headerData.userCount = '用户量'
+			}
+			if(this.type == 2){
+				this.headerData.title = '打包站名称'
+				this.headerData.userCount = '对接服务亭量'
+			}
 
 		},
 		components: {

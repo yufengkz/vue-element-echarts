@@ -11,6 +11,7 @@
 <script>
 	import axios from 'axios'
 	let posiIco = require('../../assets/img/posi.png')
+	let posiIco1 = require('../../assets/img/posi1.png')
 	export default {
 		name: '',
 		data() {
@@ -25,7 +26,7 @@
 				this.map = new BMap.Map("v-allmap", {enableMapClick: true})
 				let x = data[0].lng
 				let y = data[0].lat
-				this.map.centerAndZoom(new BMap.Point(x, y), 15) //中心点 蚌埠 117.395639, 32.921375 根据第一个确定中心点
+				this.map.centerAndZoom(new BMap.Point(x, y), 14) //中心点 蚌埠 117.395639, 32.921375 根据第一个确定中心点
 				this.map.enableScrollWheelZoom(true) //滚轮放大缩小
 				this.map.setMapStyle({style:'grayscale'}) //设置地图主题
 				//map.enableScrollWheelZoom(true);  //启用滚轮放大缩小
@@ -46,12 +47,19 @@
 
 					//设置旗点和路径点 都是服务亭
 					if(c !== pointList.length - 1){
-						var label = new BMap.Label(houseName[c], {
+						let start
+						if(c == 0) {
+							start = '起点：'
+						} else{
+							start = ''
+						}
+
+						var label = new BMap.Label(start + houseName[c], {
 							offset: new BMap.Size(20, -2) //偏移量
 						});
 					}else{
 						//最后一个点是终点 打包站
-						var label = new BMap.Label(houseName[c], {
+						var label = new BMap.Label('终点：' + houseName[c], {
 							offset: new BMap.Size(20, -2) //偏移量
 						});
 					}
