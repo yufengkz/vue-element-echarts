@@ -67,7 +67,7 @@
 				</li>
 			</ul>
 		</div>
-		<div ref="vLists" class=v-lists    :class="{showall: true, active: showall}">
+		<div ref="vLists" class=v-lists :class="{showall: true, active: showall}">
 			<div v-if="data.length > 0">
 				<table>
 					<tbody>
@@ -92,7 +92,7 @@
 								<div class="v-more-lists">
 									<div>
 										<p v-for="(items, index) in classIfyData">
-											{{items.recycleTypeTitle}} {{items.weight}}KG 共计{{items.totalPrice}}元
+											{{items.recycleTypeTitle}} {{items.weight / 1000}}KG 共计{{items.totalPrice / 100}}元
 										</p>
 									</div>
 								</div>
@@ -243,7 +243,7 @@
 						if (index == aLi.length - 1) {
 							setTimeout(() => {
 								proBox.style.height = '180px'
-								vLists.style.display = 'block'
+								//vLists.style.display = 'block'
 							}, t)
 						}
 					}, t * index);
@@ -267,7 +267,7 @@
 </script>
 <style scoped lang="less">
 	.pro-box {
-		height: 450px;
+		height: 180px;
 		padding: 0 3.17864% 0 4.16864%;
 		background: url(../../assets/img/pro-bg.png) no-repeat;
 		background-size: 100% 100%;
@@ -305,7 +305,7 @@
 	}
 
 	.v-lists {
-		display: none;
+		__display: none;
 		width: 100%;
 		background: url(../../assets/img/v-lists-bg.png) repeat-y;
 		background-size: 100% 100%;

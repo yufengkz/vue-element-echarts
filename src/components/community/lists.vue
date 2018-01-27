@@ -9,8 +9,8 @@
 			<tbody v-if="weightUser.length > 0">
 				<tr v-for="item in weightUser">
 					<td align="center">{{item.nickname}}</td>
-					<td align="center">{{item.net_weight}}kg</td>
-					<td align="center">{{item.delivery_weight}}kg</td>
+					<td align="center">{{item.net_weight / 1000}}kg</td>
+					<td align="center">{{item.delivery_weight / 1000}}kg</td>
 				</tr>
 			</tbody>
 			<tbody class="el-table-column" v-else>
@@ -35,8 +35,6 @@
 				getCount: '回收量',
 				sendCount: '交运量'
 			}
-		},
-		mounted() {
 		}
 	}
 </script>

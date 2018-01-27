@@ -29,12 +29,12 @@
 				//格式化数据
 				this.columnData.huishou.forEach((item, index) => {
 					this.timeData.push(item.ctimes)
-					this.hsData.push(item.net_weight)
+					this.hsData.push(item.net_weight / 1000)
 				})
 				console.log(this.columnData.fahuo);
 				this.columnData.fahuo.forEach((item, index) => {
 					//this.timeData.push(item.dates)
-					this.fhData.push(item.delivery_weight)
+					this.fhData.push(item.delivery_weight / 1000)
 				})
 				// 基于准备好的dom，初始化echarts实例
 				let option = {

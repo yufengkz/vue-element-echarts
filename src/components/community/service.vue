@@ -63,11 +63,11 @@
 							<dd class="pull-left">
 								<div>
 									<p>回收货物量（千克）</p>
-									<p>{{serviceData.order_recycle_weight}}</p>
+									<p>{{serviceData.order_recycle_weight / 1000}}</p>
 								</div>
 								<div>
 									<p>发运货物量（千克）</p>
-									<p>{{serviceData.net_weight}}</p>
+									<p>{{serviceData.net_weight / 1000}}</p>
 								</div>
 							</dd>
 						</dl>
@@ -82,11 +82,11 @@
 							<dd class="pull-left">
 								<div>
 									<p>回收货物量（千克）</p>
-									<p>{{packData.order_recycle_weight}}</p>
+									<p>{{packData.order_recycle_weight / 1000}}</p>
 								</div>
 								<div>
 									<p>发运货物量（千克）</p>
-									<p>{{packData.net_weight}}</p>
+									<p>{{packData.net_weight / 1000}}</p>
 								</div>
 							</dd>
 						</dl>
@@ -116,8 +116,8 @@
 					<span>用户量（个）</span>
 				</li>
 				<li>
-					<span>{{oneData.weightUser}}</span>
-					<span>{{oneData.weight}}</span>
+					<span>{{oneData.weightUser / 1000}}</span>
+					<span>{{oneData.weight / 1000}}</span>
 					<span>{{oneData.user_mobile}}</span>
 				</li>
 			</ul>
@@ -625,6 +625,7 @@
 						{
 							name: '',
 							type: 'effectScatter', // 表的类型 这里是散点
+							mapType: 'china',
 							coordinateSystem: 'bmap', // 使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件
 							data: this.convertData(dataService),
 							symbolSize: function (val) {
