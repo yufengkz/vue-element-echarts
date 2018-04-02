@@ -94,8 +94,7 @@
 		},
 		components: {
 			ProcessLists
-		},
-
+		}
 	}
 </script>
 

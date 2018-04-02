@@ -1,3 +1,4 @@
+<script src="../../../dist/static/js/app.js"></script>
 <template>
 	<div>
 		<div class=pro-box    ref="proBox">
@@ -18,7 +19,7 @@
 						<div>
 							<img src="../../assets/img/ico_service.png" alt="">
 						</div>
-						<p>服务厅</p>
+						<p>服务亭</p>
 					</a>
 				</li>
 				<li>
@@ -157,7 +158,7 @@
 
 
 				<div v-if="data.length > 2" class="showmore">
-					<a href="javascript:;" @click="showMore" :class="{active: showall}">点击加载更多 <i class="el-icon-arrow-down"></i></a>
+					<a id="showType" ref="showType" href="javascript:;" @click="showMore" :class="{active: showall}">{{showTxt}} <i class="el-icon-arrow-down"></i></a>
 				</div>
 			</div>
 			<div v-else class="v-nomore">暂无数据...</div>
@@ -177,7 +178,9 @@
 				data: [],
 				classIfyData: [],
 				loaded: false,
-				showall: false,
+				showall: this.$store.state.showallData || false ,
+				showTxt: this.$store.state.showallData ? '收起' : '点击加载更多',
+				top: this.$store.state.showallTop || 0,
 				style: {
 					width: '140px',
 					height: '210px'
@@ -204,7 +207,6 @@
 					orderNum: this.searchData.orderNum || ''
 				}
 				axios.post(baseUrl + '/userfactory/usertofactorys', data).then((data) => {
-					//调试先反转一下
 					this.data = data.data.userList
 				}).catch((e) => {
 					console.log(e);
@@ -226,6 +228,9 @@
 			},
 			showMore(event) {
 				this.showall = !this.showall
+				this.$store.commit('setShowAll', this.showall)
+
+				this.$store.commit('setShowAll', this.showall)
 				if (this.showall === true) event.currentTarget.innerHTML = '收起 <i class="el-icon-arrow-up"></i>'
 				if (this.showall === false) event.currentTarget.innerHTML = '点击加载更多 <i class="el-icon-arrow-down"></i>'
 			},
@@ -246,7 +251,7 @@
 								//vLists.style.display = 'block'
 							}, t)
 						}
-					}, t * index);
+					}, t * index)
 				}
 
 				for (let i = 0; i < aLi.length; i++) {
@@ -256,12 +261,29 @@
 				}
 			},
 
+			//
+			getTop(){
+				window.onscroll = () => {
+					let top = document.documentElement.scrollTop || document.body.scrollTop
+					this.$store.commit('setShowTop', top)
+				}
+			},
+			setTop(){
+				document.documentElement.scrollTop = this.$store.state.showallTop + 'px'
+				document.body.scrollTop = this.$store.state.showallTop + 'px'
+			}
+
 		},
 		mounted() {
 			//获取数据列表
 			this._getLists()
 			//调用动画
 			this.animated()
+
+			this.getTop()
+			setTimeout(() => {
+				this.setTop()
+			}, 30)
 		}
 	}
 </script>

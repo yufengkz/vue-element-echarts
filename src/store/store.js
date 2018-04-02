@@ -11,7 +11,9 @@ const store = new Vuex.Store({
 		count: 0,
 		color: ['#00c6d7', '#0b7bdc'],
 		countyLists: [],
-		searchData: {}
+		searchData: {},
+		showallData: false,
+		showallTop: 0,
 	},
 	mutations: {
 		set(state, data){
@@ -19,6 +21,12 @@ const store = new Vuex.Store({
 		},
 		setSearchData(state, data){
 			state.searchData = data
+		},
+		setShowAll(state, data){
+			state.showallData = data
+		},
+		setShowTop(state, data){
+			state.showallTop = data
 		}
 	},
 	strict: debug,

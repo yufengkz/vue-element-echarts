@@ -20,15 +20,32 @@
 			}
 		},
 		mounted() {
-			let orderNum = this.$route.params.id
-			axios.get(baseUrl + `/userfactory/checkimage?orderNum=${orderNum}`).then( (data) => {
-				let res = data.data
-				let imageUrl = res.imageUrl
-				let imgArr = res.pathList
-				this.picData = imgArr.map( (item) => {
-					return imageUrl + item
+			this.getImg()
+		},
+		methods: {
+			getImg(){
+				let orderNum = this.$route.params.id
+				if( ! orderNum) return
+				axios.get(baseUrl + `/userfactory/checkimage?orderNum=${orderNum}`).then( (data) => {
+					let res = data.data
+					let imageUrl = res.imageUrl
+					let imgArr = res.pathList
+					this.picData = imgArr.map( (item) => {
+						return imageUrl + item
+					})
 				})
-			})
+			}
+		},
+		// watch: {
+		// 	'$route': 'getImg'
+		// },
+		beforeRouteLeave(to, from, next){
+			this.$destroy()
+			next()
+		},
+		beforeRouteUpdate(to, from, next){
+			this.getImg()
+			next()
 		}
 	}
 </script>
@@ -77,11 +94,14 @@
 			}
 		}
 	}
-
 	.el-carousel__item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: transparent !important;
 		img{
-			width: 100%;
-			height: 100%;
+			max-width: 100%;
+			max-height: 100%;
 		}
 	}
 
